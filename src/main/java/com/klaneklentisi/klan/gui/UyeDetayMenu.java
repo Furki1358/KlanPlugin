@@ -1,0 +1,126 @@
+package com.klaneklentisi.klan.gui;
+
+import com.klaneklentisi.klan.KlanEklentisi;
+import com.klaneklentisi.klan.manager.KlanYoneticisi;
+import com.klaneklentisi.klan.model.Klan;
+import com.klaneklentisi.klan.model.Rutbe;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+public class UyeDetayMenu extends Menu {
+
+    private final Klan klan;
+    private final UUID hedefUid;
+    private final int gelinenSayfa;
+
+    public UyeDetayMenu(KlanEklentisi eklenti, Player oyuncu, Klan klan, UUID hedefUid, int gelinenSayfa) {
+        super(eklenti, oyuncu);
+        this.klan = klan;
+        this.hedefUid = hedefUid;
+        this.gelinenSayfa = gelinenSayfa;
+    }
+
+    private OfflinePlayer hedef() {
+        return Bukkit.getOfflinePlayer(hedefUid);
+    }
+
+    @Override
+    protected int boyut() {
+        return 27;
+    }
+
+    @Override
+    protected String baslik() {
+        String isim = hedef().getName() == null ? hedefUid.toString().substring(0, 8) : hedef().getName();
+        return mesajlar.baslik("menu.uye-detay.baslik", Map.of("oyuncu", isim));
+    }
+
+    @Override
+    protected void doldur() {
+        for (int i = 0; i < boyut(); i++) {
+            envanter.setItem(i, Esya.doldurucu());
+        }
+
+        Rutbe yetkiliRutbe = klan.getRutbe(oyuncu.getUniqueId());
+        Rutbe hedefRutbe = klan.getRutbe(hedefUid);
+        boolean liderMi = yetkiliRutbe == Rutbe.LIDER;
+        boolean kendisiMi = oyuncu.getUniqueId().equals(hedefUid);
+
+        String isim = hedef().getName() == null ? hedefUid.toString().substring(0, 8) : hedef().getName();
+        envanter.setItem(13, Esya.oyuncuKafasi(hedef(), "&f" + isim,
+                List.of("&7Rütbe: &f" + (hedefRutbe == null ? "-" : hedefRutbe.getGorunenAd()))));
+
+        if (liderMi && !kendisiMi && hedefRutbe != Rutbe.LIDER) {
+            envanter.setItem(10, Esya.olustur(Material.LIME_DYE, mesajlar.baslik("menu.uye-detay.terfi"),
+                    List.of(mesajlar.baslik("menu.uye-detay.terfi-aciklama"))));
+            envanter.setItem(11, Esya.olustur(Material.GRAY_DYE, mesajlar.baslik("menu.uye-detay.indir"),
+                    List.of(mesajlar.baslik("menu.uye-detay.indir-aciklama"))));
+            envanter.setItem(15, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.uye-detay.at"),
+                    List.of(mesajlar.baslik("menu.uye-detay.at-aciklama"))));
+            envanter.setItem(16, Esya.olustur(Material.NETHER_STAR, mesajlar.baslik("menu.uye-detay.devret"),
+                    List.of(mesajlar.baslik("menu.uye-detay.devret-aciklama"))));
+        } else if (!kendisiMi && yetkiliRutbe != null && hedefRutbe != null
+                && yetkiliRutbe.getSeviye() > hedefRutbe.getSeviye()) {
+            // Yönetici, kendinden düşük rütbeli üyeleri atabilir (ama terfi/indir/devret edemez)
+            envanter.setItem(15, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.uye-detay.at"),
+                    List.of(mesajlar.baslik("menu.uye-detay.at-aciklama"))));
+        }
+
+        envanter.setItem(22, Esya.olustur(Material.ARROW, mesajlar.baslik("menu.uye-detay.geri")));
+    }
+
+    @Override
+    public void tikla(InventoryClickEvent olay) {
+        int slot = olay.getSlot();
+        KlanYoneticisi.Sonuc sonuc;
+
+        switch (slot) {
+            case 10 -> {
+                sonuc = yonetici.rutbeYukselt(klan, oyuncu, hedef());
+                mesajGoster(sonuc, "yukselt");
+                yenile();
+            }
+            case 11 -> {
+                sonuc = yonetici.rutbeIndir(klan, oyuncu, hedef());
+                mesajGoster(sonuc, "indir");
+                yenile();
+            }
+            case 15 -> {
+                sonuc = yonetici.uyeAt(klan, oyuncu, hedef());
+                if (sonuc == KlanYoneticisi.Sonuc.BASARILI) {
+                    new UyelerMenu(eklenti, oyuncu, klan, gelinenSayfa).ac();
+                } else {
+                    oyuncu.sendMessage(mesajlar.al("menu.uye-detay.yetkisiz"));
+                }
+            }
+            case 16 -> {
+                sonuc = yonetici.liderlikDevret(klan, oyuncu, hedef());
+                if (sonuc == KlanYoneticisi.Sonuc.BASARILI) {
+                    new AnaMenu(eklenti, oyuncu).ac();
+                } else {
+                    oyuncu.sendMessage(mesajlar.al("menu.uye-detay.yetkisiz"));
+                }
+            }
+            case 22 -> new UyelerMenu(eklenti, oyuncu, klan, gelinenSayfa).ac();
+            default -> {}
+        }
+    }
+
+    private void mesajGoster(KlanYoneticisi.Sonuc sonuc, String komutOnEki) {
+        if (sonuc == KlanYoneticisi.Sonuc.BASARILI) {
+            Rutbe yeniRutbe = klan.getRutbe(hedefUid);
+            String isim = hedef().getName() == null ? hedefUid.toString().substring(0, 8) : hedef().getName();
+            oyuncu.sendMessage(mesajlar.al(komutOnEki + ".basarili", Map.of(
+                    "oyuncu", isim, "rutbe", yeniRutbe == null ? "-" : yeniRutbe.getGorunenAd())));
+        } else {
+            oyuncu.sendMessage(mesajlar.al("menu.uye-detay.yetkisiz"));
+        }
+    }
+}

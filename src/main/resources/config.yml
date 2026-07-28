@@ -1,0 +1,40 @@
+# ===================================================
+#   KlanEklentisi - Genel Ayarlar
+#   Bu dosyayı düzenledikten sonra /klanyonetim yenile
+#   komutuyla ayarları sunucuyu yeniden başlatmadan
+#   uygulayabilirsiniz.
+# ===================================================
+
+genel:
+  # Klan isimlerinin minimum ve maksimum uzunluğu
+  min-isim-uzunlugu: 3
+  maks-isim-uzunlugu: 16
+  # Klan etiketinin (tag) minimum ve maksimum uzunluğu
+  min-etiket-uzunlugu: 2
+  maks-etiket-uzunlugu: 6
+  # Bir oyuncu aynı anda sadece bir klanda olabilir (önerilen: true)
+  tek-klan-siniri: true
+  # Klan silindiğinde üssü de silinsin mi (sadece veri, dünyadaki bloklara dokunulmaz)
+  silmede-us-temizle: true
+
+us-sistemi:
+  # /klan us komutuyla ışınlanma açık mı
+  aktif: true
+  # Işınlanma öncesi bekleme süresi (saniye). 0 = beklemesiz
+  bekleme-suresi: 3
+  # Işınlanma sırasında hareket ederse iptal edilsin mi
+  hareket-ederse-iptal: true
+
+sohbet:
+  # Klan sohbeti formatı - {etiket}, {rutbe}, {oyuncu}, {mesaj}
+  format: "&8[&6{etiket}&8] &7{rutbe} &f{oyuncu}&8: &f{mesaj}"
+
+muttefik-rakip:
+  # Bir klan en fazla kaç müttefik/rakip edinebilir (0 = sınırsız)
+  maks-muttefik: 0
+  maks-rakip: 0
+
+depolama:
+  # Şu an desteklenen: YAML (varsayılan, dosya bazlı)
+  # İleride: SQLITE / MYSQL
+  tur: YAML

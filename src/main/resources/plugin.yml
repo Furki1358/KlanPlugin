@@ -1,0 +1,26 @@
+name: KlanEklentisi
+version: '${project.version}'
+main: com.klaneklentisi.klan.KlanEklentisi
+api-version: '1.21'
+author: Sen
+description: Türkçe klan sistemi - klan oluşturma, üyelik, rütbe, sohbet, üs, müttefik/rakip sistemi
+softdepend: [PlaceholderAPI, Vault]
+
+commands:
+  klan:
+    description: Klan komutlarını açar.
+    usage: /klan yardim
+    aliases: [clan, k]
+  klanyonetim:
+    description: Klan yönetici komutları.
+    usage: /klanyonetim yardim
+    aliases: [klanadmin, ca]
+    permission: klan.yonetici
+
+permissions:
+  klan.kullan:
+    description: Temel klan komutlarını kullanma izni.
+    default: true
+  klan.yonetici:
+    description: Klan yönetim komutlarını kullanma izni (admin).
+    default: op

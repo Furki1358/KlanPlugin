@@ -1,0 +1,301 @@
+# ===================================================
+#   KlanEklentisi - Türkçe Mesaj Dosyası
+#   {yer-tutucu} şeklindeki alanları silmeyin, otomatik
+#   olarak değerlerle değiştirilirler.
+#   Renk kodları için & kullanın (örn: &a yeşil, &c kırmızı)
+# ===================================================
+
+on-ek: "&8[&6Klan&8] &r"
+
+genel:
+  oyuncu-degil: "&cBu komutu sadece oyuncular kullanabilir."
+  klanin-yok: "&cBir klana ait değilsin."
+  yetkin-yok: "&cBu işlem için yetkin yok."
+  oyuncu-bulunamadi: "&cOyuncu bulunamadı: {oyuncu}"
+  kendine-islem-yapamazsin: "&cBu işlemi kendine yapamazsın."
+  bilinmeyen-komut: "&cBilinmeyen komut. Yardım için: &f/klan yardim"
+
+kullanim:
+  olustur: "&cKullanım: /klan olustur <isim> <etiket>"
+  davet: "&cKullanım: /klan davet <oyuncu>"
+  at: "&cKullanım: /klan at <oyuncu>"
+  yukselt: "&cKullanım: /klan yukselt <oyuncu>"
+  indir: "&cKullanım: /klan indir <oyuncu>"
+  devret: "&cKullanım: /klan devret <oyuncu>"
+  katil: "&cKullanım: /klan katil <klan-ismi>"
+  bilgi: "&cKullanım: /klan bilgi <klan-ismi>"
+  katilim-turu: "&cKullanım: /klan katilimturu <acik|davetli>"
+  etiket: "&cKullanım: /klan etiket <yeni-etiket>"
+  aciklama: "&cKullanım: /klan aciklama <metin>"
+  muttefik: "&cKullanım: /klan muttefik <ekle|cikar> <klan-ismi>"
+  rakip: "&cKullanım: /klan rakip <ekle|cikar> <klan-ismi>"
+  sohbet: "&cKullanım: /klan sohbet [mesaj]"
+
+olustur:
+  basarili: "&a{isim} klanı başarıyla oluşturuldu! Etiket: &f[{etiket}]"
+  gecersiz-isim: "&cGeçersiz klan ismi. (Uzunluk: {min}-{maks}, sadece harf/rakam/alt çizgi)"
+  gecersiz-etiket: "&cGeçersiz klan etiketi. (Uzunluk: {min}-{maks})"
+  isim-kullanimda: "&cBu isimde bir klan zaten var."
+  etiket-kullanimda: "&cBu etiket başka bir klan tarafından kullanılıyor."
+  zaten-klanda: "&cZaten bir klana üyesin. Önce ayrılmalısın."
+
+sil:
+  onay-gerekli: "&eKlanını silmek üzeresin! Onaylamak için: &f/klan sil onayla"
+  basarili: "&aKlanın silindi."
+  yetkisiz: "&cSadece klan lideri klanı silebilir."
+
+bilgi:
+  klan-yok: "&cBöyle bir klan yok."
+  baslik: "&6=== {isim} &8[&f{etiket}&8] &6==="
+  aciklama: "&7Açıklama: &f{aciklama}"
+  lider: "&7Lider: &f{lider}"
+  uye-sayisi: "&7Üye sayısı: &f{sayi}"
+  katilim-turu: "&7Katılım türü: &f{tur}"
+  muttefikler: "&7Müttefikler: &f{liste}"
+  rakipler: "&7Rakipler: &f{liste}"
+  kurulus-tarihi: "&7Kuruluş tarihi: &f{tarih}"
+  liste-bos: "yok"
+
+liste:
+  baslik: "&6=== Klanlar ({sayi}) ==="
+  satir: "&7- &f{isim} &8[&7{etiket}&8] &7({uyeSayisi} üye)"
+  bos: "&7Henüz hiç klan yok."
+
+davet:
+  gonderildi: "&a{oyuncu} adlı oyuncuya davet gönderildi."
+  aldin: "&a{klan} klanından davet aldın! Kabul: &f/klan kabul &a- Reddet: &f/klan reddet"
+  zaten-klanda: "&cO oyuncu zaten bir klanda."
+  yetkisiz: "&cDavet gönderme yetkin yok. (Yönetici veya lider olmalısın)"
+  kendine: "&cKendini davet edemezsin."
+
+kabul:
+  basarili: "&a{klan} klanına katıldın!"
+  davet-yok: "&cBekleyen bir davetin yok."
+  zaten-klanda: "&cZaten bir klandasın."
+  klan-yok: "&cO klan artık mevcut değil."
+  duyuru: "&a{oyuncu} klana katıldı!"
+
+reddet:
+  basarili: "&7Daveti reddettin."
+  davet-yok: "&cBekleyen bir davetin yok."
+
+katil:
+  basarili: "&a{klan} klanına katıldın!"
+  kapali: "&cBu klan sadece davetle katılıma açık."
+  klan-yok: "&cBöyle bir klan yok."
+  zaten-klanda: "&cZaten bir klandasın."
+  duyuru: "&a{oyuncu} klana katıldı!"
+
+ayril:
+  basarili: "&7{klan} klanından ayrıldın."
+  lider-ayrilamaz: "&cLider olarak ayrılamazsın. Önce liderliği devret ya da klanı sil."
+  klanin-yok: "&cBir klana ait değilsin."
+  duyuru: "&7{oyuncu} klandan ayrıldı."
+
+at:
+  basarili: "&a{oyuncu} klandan atıldı."
+  yetkisiz: "&cBu oyuncuyu atma yetkin yok."
+  oyuncu-yok: "&cBu oyuncu klanında değil."
+  duyuru: "&7{oyuncu} klandan atıldı."
+
+yukselt:
+  basarili: "&a{oyuncu} adlı oyuncunun rütbesi yükseltildi: {rutbe}"
+  yetkisiz: "&cSadece lider rütbe değiştirebilir."
+  oyuncu-yok: "&cBu oyuncu klanında değil."
+
+indir:
+  basarili: "&a{oyuncu} adlı oyuncunun rütbesi düşürüldü: {rutbe}"
+  yetkisiz: "&cSadece lider rütbe değiştirebilir."
+  oyuncu-yok: "&cBu oyuncu klanında değil."
+
+devret:
+  basarili: "&aLiderliği {oyuncu} adlı oyuncuya devrettin."
+  yetkisiz: "&cSadece lider liderliği devredebilir."
+  oyuncu-yok: "&cBu oyuncu klanında değil."
+
+katilimturu:
+  basarili: "&aKlan katılım türü değiştirildi: {tur}"
+  yetkisiz: "&cBu ayarı sadece yönetici/lider değiştirebilir."
+  gecersiz: "&cGeçerli değerler: acik, davetli"
+
+etiket:
+  basarili: "&aKlan etiketi değiştirildi: [{etiket}]"
+  gecersiz: "&cGeçersiz etiket. (Uzunluk: {min}-{maks})"
+  kullanimda: "&cBu etiket kullanımda."
+  yetkisiz: "&cEtiketi değiştirme yetkin yok."
+
+aciklama:
+  basarili: "&aKlan açıklaması güncellendi."
+  yetkisiz: "&cAçıklamayı değiştirme yetkin yok."
+
+us:
+  ayarlandi: "&aKlan üssü buraya ayarlandı."
+  yok: "&cKlanının henüz bir üssü yok."
+  isinlaniyor: "&e{saniye} saniye içinde ışınlanacaksın, hareket etme!"
+  isinlandi: "&aIşınlandın!"
+  iptal-hareket: "&cHareket ettiğin için ışınlanma iptal edildi."
+  yetkisiz: "&cÜssü ayarlama yetkin yok. (Yönetici veya lider olmalısın)"
+  kapali: "&cÜs sistemi bu sunucuda kapalı."
+
+muttefik:
+  eklendi: "&a{klan} artık müttefikin."
+  cikarildi: "&7{klan} artık müttefikin değil."
+  zaten: "&cZaten müttefiksiniz."
+  degil: "&cZaten müttefik değilsiniz."
+  kendine: "&cKendi klanınla müttefik olamazsın."
+  klan-yok: "&cBöyle bir klan yok."
+  yetkisiz: "&cBu işlem için yetkin yok."
+  sinir: "&cMaksimum müttefik sayısına ulaşıldı."
+
+rakip:
+  eklendi: "&a{klan} artık rakibin."
+  cikarildi: "&7{klan} artık rakibin değil."
+  zaten: "&cZaten rakipsiniz."
+  degil: "&cZaten rakip değilsiniz."
+  kendine: "&cKendi klanınla rakip olamazsın."
+  klan-yok: "&cBöyle bir klan yok."
+  yetkisiz: "&cBu işlem için yetkin yok."
+  sinir: "&cMaksimum rakip sayısına ulaşıldı."
+
+sohbet:
+  acildi: "&aKlan sohbet modu açıldı. Normal sohbete dönmek için tekrar &f/klan sohbet &ayaz."
+  kapandi: "&7Klan sohbet modu kapatıldı."
+  klanin-yok: "&cBir klana ait değilsin, klan sohbeti kullanamazsın."
+
+yonetim:
+  klan-yok: "&cBöyle bir klan yok."
+  silindi: "&a{isim} klanı yönetici tarafından silindi."
+  yenilendi: "&aAyarlar ve dil dosyası yeniden yüklendi."
+  yetkisiz: "&cBu komutu kullanmak için yetkin yok."
+
+yardim-metni:
+  - "&6&l=== Klan Komutları ==="
+  - "&f/klan menu &7- Tıklanabilir klan menüsünü aç"
+  - "&f/klan olustur <isim> <etiket> &7- Yeni klan kur"
+  - "&f/klan sil onayla &7- Klanını sil"
+  - "&f/klan bilgi [isim] &7- Klan bilgilerini görüntüle"
+  - "&f/klan liste &7- Tüm klanları listele"
+  - "&f/klan davet <oyuncu> &7- Oyuncuyu klana davet et"
+  - "&f/klan kabul &7- Bekleyen daveti kabul et"
+  - "&f/klan reddet &7- Bekleyen daveti reddet"
+  - "&f/klan katil <isim> &7- Açık klana katıl"
+  - "&f/klan ayril &7- Klandan ayrıl"
+  - "&f/klan at <oyuncu> &7- Üyeyi klandan at"
+  - "&f/klan yukselt <oyuncu> &7- Üyenin rütbesini yükselt"
+  - "&f/klan indir <oyuncu> &7- Üyenin rütbesini düşür"
+  - "&f/klan devret <oyuncu> &7- Liderliği devret"
+  - "&f/klan katilimturu <acik|davetli> &7- Katılım türünü ayarla"
+  - "&f/klan etiket <etiket> &7- Klan etiketini değiştir"
+  - "&f/klan aciklama <metin> &7- Klan açıklamasını değiştir"
+  - "&f/klan us ayarla &7- Klan üssünü buraya ayarla"
+  - "&f/klan us &7- Klan üssüne ışınlan"
+  - "&f/klan muttefik <ekle|cikar> <isim> &7- Müttefik yönet"
+  - "&f/klan rakip <ekle|cikar> <isim> &7- Rakip yönet"
+  - "&f/klan sohbet [mesaj] &7- Klan sohbeti kullan"
+
+yonetim-yardim-metni:
+  - "&6&l=== Klan Yönetim Komutları ==="
+  - "&f/klanyonetim sil <isim> &7- Bir klanı zorla sil"
+  - "&f/klanyonetim liste &7- Tüm klanları listele"
+  - "&f/klanyonetim yenile &7- config.yml ve lang dosyasını yeniden yükle"
+
+# ===================================================
+#   GUI Menü Metinleri
+# ===================================================
+menu:
+  ana:
+    baslik: "&8Klan Menüsü"
+    klanin-yok-baslik: "&8Klan Menüsü - Klansız"
+    bilgi: "&6Klan Bilgisi"
+    uyeler: "&aÜyeler"
+    ayarlar: "&eAyarlar"
+    muttefikler: "&bMüttefikler"
+    rakipler: "&cRakipler"
+    klan-listesi: "&dKlan Listesi"
+    us: "&2Klan Üssü"
+    sohbet-ac: "&fKlan Sohbeti: &aAçık &7(kapatmak için tıkla)"
+    sohbet-kapali: "&fKlan Sohbeti: &cKapalı &7(açmak için tıkla)"
+    olustur: "&aKlan Oluştur"
+    olustur-aciklama:
+      - "&7Yeni bir klan kurmak için"
+      - "&7sohbete şunu yaz:"
+      - "&f/klan olustur <isim> <etiket>"
+    davet-var: "&eBekleyen Davetin Var!"
+    davet-aciklama:
+      - "&7{klan} klanından davet aldın."
+      - "&7Görüntülemek için tıkla."
+    kapat: "&cKapat"
+    klanin-yok: "&cBir klana ait değilsin!"
+  uyeler:
+    baslik: "&8Üyeler - {isim}"
+    geri: "&7« Ana Menüye Dön"
+    sonraki-sayfa: "&aSonraki Sayfa »"
+    onceki-sayfa: "&a« Önceki Sayfa"
+    uye-bilgi:
+      - "&7Rütbe: &f{rutbe}"
+      - ""
+      - "&7İncelemek için tıkla"
+  uye-detay:
+    baslik: "&8{oyuncu}"
+    terfi: "&aTerfi Ettir"
+    terfi-aciklama: "&7Bu üyeyi bir üst rütbeye çıkar"
+    indir: "&cRütbeyi Düşür"
+    indir-aciklama: "&7Bu üyenin rütbesini düşür"
+    at: "&4Klandan At"
+    at-aciklama: "&7Bu üyeyi klandan çıkar"
+    devret: "&6Liderliği Devret"
+    devret-aciklama: "&7Liderliği bu üyeye devret"
+    geri: "&7« Üyelere Dön"
+    yetkisiz: "&cBu üye için işlem yapma yetkin yok."
+  ayarlar:
+    baslik: "&8Klan Ayarları"
+    katilim-turu: "&eKatılım Türü: &f{tur}"
+    katilim-turu-aciklama: "&7Değiştirmek için tıkla"
+    etiket: "&bEtiket Değiştir"
+    etiket-aciklama: "&7Mevcut: &f[{etiket}]"
+    aciklama: "&3Açıklama Değiştir"
+    sil: "&4Klanı Sil"
+    sil-aciklama: "&7Dikkat: Geri alınamaz!"
+    geri: "&7« Ana Menüye Dön"
+    yetkisiz: "&cBu ayarları değiştirme yetkin yok."
+  girdi:
+    etiket-iste: "&eYeni etiketini sohbete yaz. (İptal için: iptal)"
+    aciklama-iste: "&eYeni açıklamanı sohbete yaz. (İptal için: iptal)"
+    sil-onay-iste: "&cKlanı silmek istediğinden emin misin? Onaylamak için sohbete 'evet' yaz, vazgeçmek için başka bir şey yaz."
+    iptal-edildi: "&7İşlem iptal edildi."
+  muttefik-rakip:
+    baslik-muttefik: "&8Müttefikler"
+    baslik-rakip: "&8Rakipler"
+    ekle: "&aEkle"
+    ekle-aciklama: "&7Yeni bir klan seçmek için tıkla"
+    cikar-aciklama: "&7Çıkarmak için tıkla"
+    gecersiz-sayi: "&7Henüz hiç yok."
+    geri: "&7« Ana Menüye Dön"
+  klan-sec:
+    baslik: "&8Klan Seç"
+    sonraki-sayfa: "&aSonraki Sayfa »"
+    onceki-sayfa: "&a« Önceki Sayfa"
+    geri: "&7« Geri"
+    bos: "&7Uygun klan bulunamadı."
+  klan-listesi:
+    baslik: "&8Tüm Klanlar"
+    satir-aciklama:
+      - "&7Etiket: &f[{etiket}]"
+      - "&7Üye: &f{uyeSayisi}"
+      - "&7Katılım: &f{tur}"
+      - ""
+      - "&7Bilgi için tıkla"
+    sonraki-sayfa: "&aSonraki Sayfa »"
+    onceki-sayfa: "&a« Önceki Sayfa"
+    geri: "&7« Ana Menüye Dön"
+  klan-bilgi:
+    baslik: "&8{isim}"
+    katil: "&aKlana Katıl"
+    katil-kapali: "&7Bu klan davetle katılıma kapalı"
+    geri: "&7« Geri"
+  davet:
+    baslik: "&8Davet: {klan}"
+    kabul: "&aKabul Et"
+    reddet: "&cReddet"
+    geri: "&7« Ana Menüye Dön"
+

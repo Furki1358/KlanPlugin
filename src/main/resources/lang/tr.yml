@@ -36,6 +36,7 @@ kullanim:
   rakip: "&c➤ Kullanım: &f/klan rakip <ekle|cikar> <klan-ismi>"
   sohbet: "&c➤ Kullanım: &f/klan sohbet [mesaj]"
   msohbet: "&c➤ Kullanım: &f/klan msohbet [mesaj]"
+  istatistik: "&c➤ Kullanım: &f/klan istatistik [oyuncu]"
 
 olustur:
   basarili: "&a✔ &f{isim} &aklanı başarıyla kuruldu! &7Etiket: &f[{etiket}]"
@@ -186,6 +187,22 @@ yonetim:
   yenilendi: "&a✔ Ayarlar ve dil dosyası yeniden yüklendi."
   yetkisiz: "&c✖ Bu komutu kullanmak için yetkin yok."
 
+istatistik:
+  olum-bildirimi: "&a✚1 &7Öldürme &8» &f{hedef} &8(&fK/D: {oran}&8)"
+  baslik: "&6★ {oyuncu} &7İstatistikleri"
+  oldurme: "&7▪ Öldürme: &a{sayi}"
+  olme: "&7▪ Ölme: &c{sayi}"
+  oran: "&7▪ K/D Oranı: &f{oran}"
+  oyuncu-bulunamadi: "&c✖ Bu oyuncu hiç oynamamış."
+
+liderlik:
+  baslik: "&6&l❖ Liderlik Tablosu &7(Sayfa {sayfa}/{toplam}) &6❖"
+  satir: "&7#{sira} &f{oyuncu} &8» &aÖ:{oldurme} &7Ö:{olme} &8» &fK/D: {oran}"
+  bos: "&7Henüz hiç istatistik yok."
+  onceki-buton: "◄ Önceki"
+  sonraki-buton: "Sonraki ►"
+  sayfa-yok: "&7Bu sayfada gösterilecek bir şey yok."
+
 yardim-metni:
   - "&6&l❖═══ Klan Komutları ═══❖"
   - "&f➤ /klan &7veya &f/klan menu &7- Tıklanabilir klan menüsünü aç"
@@ -211,6 +228,8 @@ yardim-metni:
   - "&f➤ /klan rakip <ekle|cikar> <isim> &7- Rakip yönet"
   - "&f➤ /klan sohbet [mesaj] &7- Klan sohbeti kullan"
   - "&f➤ /klan msohbet [mesaj] &7- Müttefik sohbeti kullan (klan + müttefikler)"
+  - "&f➤ /klan liderlik &7- KDR liderlik tablosunu göster"
+  - "&f➤ /klan istatistik [oyuncu] &7- Öldürme/ölme istatistiklerini göster"
 
 yonetim-yardim-metni:
   - "&6&l❖═══ Klan Yönetim Komutları ═══❖"
@@ -233,6 +252,7 @@ menu:
     rakipler: "&c⚔ Rakipler"
     klan-listesi: "&d❖ Klan Listesi"
     us: "&2⚑ Klan Üssü"
+    liderlik: "&6★ Liderlik Tablosu"
     sohbet-ac: "&f✎ Klan Sohbeti: &aAçık &7(kapatmak için tıkla)"
     sohbet-kapali: "&f✎ Klan Sohbeti: &cKapalı &7(açmak için tıkla)"
     olustur: "&a✚ Klan Oluştur"

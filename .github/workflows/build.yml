@@ -1,0 +1,29 @@
+name: KlanEklentisi Derleme
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: {}
+
+jobs:
+  derle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodu çek
+        uses: actions/checkout@v4
+
+      - name: Java 21 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Maven ile derle
+        run: mvn -B clean package
+
+      - name: Jar dosyasını yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: KlanEklentisi-jar
+          path: target/*.jar

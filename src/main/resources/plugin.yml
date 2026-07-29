@@ -3,8 +3,8 @@ version: '${project.version}'
 main: com.klaneklentisi.klan.KlanEklentisi
 api-version: '1.21'
 author: Sen
-description: Türkçe klan sistemi - klan oluşturma, üyelik, rütbe, sohbet, üs, müttefik/rakip sistemi
-softdepend: [PlaceholderAPI, Vault]
+description: Türkçe klan sistemi - klan oluşturma, üyelik, rütbe, sohbet, üs, müttefik/rakip sistemi, GUI menüler
+softdepend: [PlaceholderAPI, Vault, LuckPerms]
 
 commands:
   klan:
@@ -18,9 +18,124 @@ commands:
     permission: klan.yonetici
 
 permissions:
+  # ---- Ana gruplar ----
   klan.kullan:
-    description: Temel klan komutlarını kullanma izni.
+    description: Temel klan komutlarını kullanma izni (tüm klan.komut.* alt izinlerini kapsar).
     default: true
+    children:
+      klan.komut.yardim: true
+      klan.komut.menu: true
+      klan.komut.olustur: true
+      klan.komut.sil: true
+      klan.komut.bilgi: true
+      klan.komut.liste: true
+      klan.komut.davet: true
+      klan.komut.kabul: true
+      klan.komut.reddet: true
+      klan.komut.katil: true
+      klan.komut.ayril: true
+      klan.komut.at: true
+      klan.komut.yukselt: true
+      klan.komut.indir: true
+      klan.komut.devret: true
+      klan.komut.katilimturu: true
+      klan.komut.etiket: true
+      klan.komut.aciklama: true
+      klan.komut.us: true
+      klan.komut.muttefik: true
+      klan.komut.rakip: true
+      klan.komut.sohbet: true
+      klan.komut.msohbet: true
+
   klan.yonetici:
-    description: Klan yönetim komutlarını kullanma izni (admin).
+    description: Klan yönetim komutlarını ve admin GUI'sini kullanma izni (varsayılan op).
+    default: op
+    children:
+      klan.komut.yonetim.sil: true
+      klan.komut.yonetim.liste: true
+      klan.komut.yonetim.yenile: true
+      klan.komut.yonetim.menu: true
+
+  # ---- Komut bazlı ayrıntılı izinler (LuckPerms ile tek tek kısıtlanabilir) ----
+  klan.komut.yardim:
+    description: /klan yardim komutunu kullanma izni.
+    default: true
+  klan.komut.menu:
+    description: /klan menu (GUI) komutunu kullanma izni.
+    default: true
+  klan.komut.olustur:
+    description: Yeni klan kurma izni.
+    default: true
+  klan.komut.sil:
+    description: Kendi klanını silme izni.
+    default: true
+  klan.komut.bilgi:
+    description: Klan bilgisi görüntüleme izni.
+    default: true
+  klan.komut.liste:
+    description: Klan listesini görüntüleme izni.
+    default: true
+  klan.komut.davet:
+    description: Klana oyuncu davet etme izni.
+    default: true
+  klan.komut.kabul:
+    description: Klan davetini kabul etme izni.
+    default: true
+  klan.komut.reddet:
+    description: Klan davetini reddetme izni.
+    default: true
+  klan.komut.katil:
+    description: Açık klanlara katılma izni.
+    default: true
+  klan.komut.ayril:
+    description: Klandan ayrılma izni.
+    default: true
+  klan.komut.at:
+    description: Klandan üye atma izni.
+    default: true
+  klan.komut.yukselt:
+    description: Üye rütbesini yükseltme izni.
+    default: true
+  klan.komut.indir:
+    description: Üye rütbesini düşürme izni.
+    default: true
+  klan.komut.devret:
+    description: Liderliği devretme izni.
+    default: true
+  klan.komut.katilimturu:
+    description: Klan katılım türünü değiştirme izni.
+    default: true
+  klan.komut.etiket:
+    description: Klan etiketini değiştirme izni.
+    default: true
+  klan.komut.aciklama:
+    description: Klan açıklamasını değiştirme izni.
+    default: true
+  klan.komut.us:
+    description: Klan üssünü ayarlama/kullanma izni.
+    default: true
+  klan.komut.muttefik:
+    description: Müttefik yönetme izni.
+    default: true
+  klan.komut.rakip:
+    description: Rakip yönetme izni.
+    default: true
+  klan.komut.sohbet:
+    description: Klan sohbetini kullanma izni.
+    default: true
+  klan.komut.msohbet:
+    description: Müttefik sohbetini kullanma izni.
+    default: true
+
+  klan.komut.yonetim.sil:
+    description: /klanyonetim sil komutunu kullanma izni.
+    default: op
+  klan.komut.yonetim.liste:
+    description: /klanyonetim liste komutunu kullanma izni.
+    default: op
+  klan.komut.yonetim.yenile:
+    description: /klanyonetim yenile komutunu kullanma izni.
+    default: op
+  klan.komut.yonetim.menu:
+    description: /klanyonetim menu (Admin GUI) komutunu kullanma izni.
     default: op

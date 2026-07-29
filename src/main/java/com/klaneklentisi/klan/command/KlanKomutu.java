@@ -32,7 +32,7 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
     private static final List<String> ALT_KOMUTLAR = Arrays.asList(
             "yardim", "olustur", "sil", "bilgi", "liste", "davet", "kabul", "reddet",
             "katil", "ayril", "at", "yukselt", "indir", "devret", "katilimturu",
-            "etiket", "aciklama", "us", "muttefik", "rakip", "sohbet", "menu", "gui"
+            "etiket", "aciklama", "us", "muttefik", "rakip", "sohbet", "msohbet", "menu", "gui"
     );
 
     private final KlanEklentisi eklenti;
@@ -61,14 +61,53 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
         return m;
     }
 
+    /** Alt komut adını Bukkit izin düğümüne eşler (LuckPerms ile ayrıntılı kısıtlama için). */
+    private static final Map<String, String> IZIN_ESLEME = Map.ofEntries(
+            Map.entry("yardim", "klan.komut.yardim"),
+            Map.entry("menu", "klan.komut.menu"),
+            Map.entry("gui", "klan.komut.menu"),
+            Map.entry("olustur", "klan.komut.olustur"),
+            Map.entry("sil", "klan.komut.sil"),
+            Map.entry("bilgi", "klan.komut.bilgi"),
+            Map.entry("liste", "klan.komut.liste"),
+            Map.entry("davet", "klan.komut.davet"),
+            Map.entry("kabul", "klan.komut.kabul"),
+            Map.entry("reddet", "klan.komut.reddet"),
+            Map.entry("katil", "klan.komut.katil"),
+            Map.entry("ayril", "klan.komut.ayril"),
+            Map.entry("at", "klan.komut.at"),
+            Map.entry("yukselt", "klan.komut.yukselt"),
+            Map.entry("indir", "klan.komut.indir"),
+            Map.entry("devret", "klan.komut.devret"),
+            Map.entry("katilimturu", "klan.komut.katilimturu"),
+            Map.entry("etiket", "klan.komut.etiket"),
+            Map.entry("aciklama", "klan.komut.aciklama"),
+            Map.entry("us", "klan.komut.us"),
+            Map.entry("muttefik", "klan.komut.muttefik"),
+            Map.entry("rakip", "klan.komut.rakip"),
+            Map.entry("sohbet", "klan.komut.sohbet"),
+            Map.entry("msohbet", "klan.komut.msohbet")
+    );
+
     @Override
     public boolean onCommand(CommandSender gonderen, Command komut, String etiket, String[] args) {
         if (args.length == 0) {
-            yardimGoster(gonderen);
+            if (gonderen instanceof Player) {
+                menuAc(gonderen);
+            } else {
+                yardimGoster(gonderen);
+            }
             return true;
         }
 
         String alt = args[0].toLowerCase(TR);
+
+        String izinDugumu = IZIN_ESLEME.get(alt);
+        if (izinDugumu != null && !gonderen.hasPermission(izinDugumu)) {
+            gonder(gonderen, "genel.izin-yok");
+            return true;
+        }
+
         switch (alt) {
             case "yardim" -> yardimGoster(gonderen);
             case "olustur" -> olustur(gonderen, args);
@@ -91,6 +130,7 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
             case "muttefik" -> muttefikRakip(gonderen, args, true);
             case "rakip" -> muttefikRakip(gonderen, args, false);
             case "sohbet" -> sohbet(gonderen, args);
+            case "msohbet" -> msohbet(gonderen, args);
             case "menu", "gui" -> menuAc(gonderen);
             default -> gonder(gonderen, "genel.bilinmeyen-komut");
         }
@@ -162,12 +202,49 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
             gonder(gonderen, "sil.yetkisiz");
             return;
         }
-        if (args.length < 2 || !args[1].equalsIgnoreCase("onayla")) {
-            gonder(gonderen, "sil.onay-gerekli");
+        if (args.length >= 2 && args[1].equalsIgnoreCase("onayla")) {
+            yonetici.klanSil(klan.getIsim());
+            gonder(gonderen, "sil.basarili");
             return;
         }
-        yonetici.klanSil(klan.getIsim());
-        gonder(gonderen, "sil.basarili");
+        silOnayGonder(oyuncu, klan.getIsim());
+    }
+
+    /** Klan silme onayı için tıklanabilir buton gönderir - komut yazmaya gerek kalmaz. */
+    private void silOnayGonder(Player oyuncu, String klanIsmi) {
+        oyuncu.sendMessage(mesajlar.al("sil.onay-gerekli"));
+        var onayButon = com.klaneklentisi.klan.util.Butonlar.buton(
+                mesajlar.hamMetin("sil.onay-buton"),
+                net.kyori.adventure.text.format.NamedTextColor.RED,
+                mesajlar.hamMetin("sil.onay-ipucu"),
+                p -> {
+                    Optional<Klan> guncelKlan = yonetici.klanBul(p.getUniqueId());
+                    if (guncelKlan.isPresent() && guncelKlan.get().getIsim().equalsIgnoreCase(klanIsmi)
+                            && guncelKlan.get().getRutbe(p.getUniqueId()) == Rutbe.LIDER) {
+                        yonetici.klanSil(klanIsmi);
+                        p.sendMessage(mesajlar.al("sil.basarili"));
+                    }
+                });
+        oyuncu.sendMessage(onayButon);
+    }
+
+    /** Davet edilen oyuncuya tıklanabilir Kabul Et / Reddet butonlarıyla bildirim gönderir. */
+    private void davetBildirimGonder(Player hedef, Klan klan) {
+        hedef.sendMessage(mesajlar.al("davet.bildirim", harita("klan", klan.getIsim())));
+
+        var kabulButon = com.klaneklentisi.klan.util.Butonlar.buton(
+                mesajlar.hamMetin("davet.kabul-buton"),
+                net.kyori.adventure.text.format.NamedTextColor.GREEN,
+                mesajlar.hamMetin("davet.kabul-ipucu"),
+                this::kabul);
+        var reddetButon = com.klaneklentisi.klan.util.Butonlar.buton(
+                mesajlar.hamMetin("davet.reddet-buton"),
+                net.kyori.adventure.text.format.NamedTextColor.RED,
+                mesajlar.hamMetin("davet.reddet-ipucu"),
+                this::reddet);
+
+        hedef.sendMessage(kabulButon.append(net.kyori.adventure.text.Component.text("   "))
+                .append(reddetButon));
     }
 
     // -----------------------------------------------------------------
@@ -256,7 +333,7 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
         switch (sonuc) {
             case BASARILI -> {
                 gonder(gonderen, "davet.gonderildi", harita("oyuncu", hedef.getName()));
-                gonder(hedef, "davet.aldin", harita("klan", klanOpt.get().getIsim()));
+                davetBildirimGonder(hedef, klanOpt.get());
             }
             case YETKISIZ -> gonder(gonderen, "davet.yetkisiz");
             case ZATEN_KLANDA -> gonder(gonderen, "davet.zaten-klanda");
@@ -685,6 +762,58 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
             if (alici != null) {
                 alici.sendMessage(renkli);
             }
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // MÜTTEFİK SOHBETİ (klan + tüm müttefik klanlar)
+    // -----------------------------------------------------------------
+    private void msohbet(CommandSender gonderen, String[] args) {
+        if (!oyuncuMu(gonderen)) return;
+        Player oyuncu = (Player) gonderen;
+        Optional<Klan> klanOpt = yonetici.klanBul(oyuncu.getUniqueId());
+        if (klanOpt.isEmpty()) {
+            gonder(gonderen, "msohbet.klanin-yok");
+            return;
+        }
+        Klan klan = klanOpt.get();
+
+        if (args.length >= 2) {
+            String mesaj = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+            klanMuttefikSohbetiGonder(klan, oyuncu, mesaj);
+            return;
+        }
+
+        yonetici.mSohbetModunuDegistir(oyuncu.getUniqueId());
+        if (yonetici.mSohbetModuAcikMi(oyuncu.getUniqueId())) {
+            gonder(gonderen, "msohbet.acildi");
+        } else {
+            gonder(gonderen, "msohbet.kapandi");
+        }
+    }
+
+    /** Mesajı gönderenin klanına ve tüm müttefik klanların çevrimiçi üyelerine iletir. */
+    public void klanMuttefikSohbetiGonder(Klan klan, Player gonderen, String mesaj) {
+        Rutbe rutbe = klan.getRutbe(gonderen.getUniqueId());
+        String format = eklenti.getConfig().getString("sohbet.muttefik-format",
+                "&8[&b⚔M&8] &7{rutbe} &f{oyuncu}&8: &b{mesaj}");
+        format = format.replace("{etiket}", klan.getEtiket())
+                .replace("{rutbe}", rutbe == null ? "" : rutbe.getGorunenAd())
+                .replace("{oyuncu}", gonderen.getName())
+                .replace("{mesaj}", mesaj);
+        String renkli = Mesajlar.renkli(format);
+
+        for (var uid : klan.getUyeler().keySet()) {
+            Player alici = Bukkit.getPlayer(uid);
+            if (alici != null) alici.sendMessage(renkli);
+        }
+        for (String muttefikIsmi : klan.getMuttefikler()) {
+            yonetici.klanBul(muttefikIsmi).ifPresent(muttefikKlan -> {
+                for (var uid : muttefikKlan.getUyeler().keySet()) {
+                    Player alici = Bukkit.getPlayer(uid);
+                    if (alici != null) alici.sendMessage(renkli);
+                }
+            });
         }
     }
 

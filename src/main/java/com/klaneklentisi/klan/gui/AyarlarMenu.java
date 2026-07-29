@@ -92,8 +92,21 @@ public class AyarlarMenu extends Menu {
                     return;
                 }
                 oyuncu.closeInventory();
-                oyuncu.sendMessage(mesajlar.al("menu.girdi.sil-onay-iste"));
-                eklenti.getGirdiYoneticisi().girdiBekle(oyuncu.getUniqueId(), metin -> silOnayIsle(metin));
+                String klanIsmi = klan.getIsim();
+                oyuncu.sendMessage(mesajlar.al("sil.onay-gerekli"));
+                var onayButon = com.klaneklentisi.klan.util.Butonlar.buton(
+                        mesajlar.hamMetin("sil.onay-buton"),
+                        net.kyori.adventure.text.format.NamedTextColor.RED,
+                        mesajlar.hamMetin("sil.onay-ipucu"),
+                        p -> {
+                            var guncelKlan = yonetici.klanBul(p.getUniqueId());
+                            if (guncelKlan.isPresent() && guncelKlan.get().getIsim().equalsIgnoreCase(klanIsmi)
+                                    && guncelKlan.get().getRutbe(p.getUniqueId()) == com.klaneklentisi.klan.model.Rutbe.LIDER) {
+                                yonetici.klanSil(klanIsmi);
+                                p.sendMessage(mesajlar.al("sil.basarili"));
+                            }
+                        });
+                oyuncu.sendMessage(onayButon);
             }
             case 26 -> new AnaMenu(eklenti, oyuncu).ac();
             default -> {}
@@ -132,12 +145,4 @@ public class AyarlarMenu extends Menu {
         oyuncu.sendMessage(mesajlar.al("aciklama.basarili"));
     }
 
-    private void silOnayIsle(String metin) {
-        if (!metin.equalsIgnoreCase("evet")) {
-            oyuncu.sendMessage(mesajlar.al("menu.girdi.iptal-edildi"));
-            return;
-        }
-        yonetici.klanSil(klan.getIsim());
-        oyuncu.sendMessage(mesajlar.al("sil.basarili"));
-    }
 }

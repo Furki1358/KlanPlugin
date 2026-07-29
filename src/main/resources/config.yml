@@ -40,3 +40,16 @@ depolama:
   # Şu an desteklenen: YAML (varsayılan, dosya bazlı)
   # İleride: SQLITE / MYSQL
   tur: YAML
+
+istatistik:
+  # KDR takibi ve öldürme ödülü sistemi genel açma/kapama
+  aktif: true
+  # Öldürünce katile gösterilecek küçük bildirim (K/D oranı ile)
+  olum-mesaji-goster: true
+  # Vault yüklüyse öldürme başına verilecek para (0 = kapalı)
+  vault-para-odulu: 0
+  # Öldürünce konsolda çalıştırılacak komutlar - {oyuncu} = katil, {hedef} = ölen
+  # Örnek: "give {oyuncu} diamond 1"
+  odul-komutlari: []
+  # /klan liderlik komutunda ve GUI'de bir sayfada kaç oyuncu gösterilsin
+  sayfa-basi: 8

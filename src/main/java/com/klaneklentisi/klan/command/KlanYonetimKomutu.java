@@ -38,6 +38,14 @@ public class KlanYonetimKomutu implements CommandExecutor, TabCompleter {
         alici.sendMessage(mesajlar.al(anahtar));
     }
 
+    private static final Map<String, String> IZIN_ESLEME = Map.of(
+            "sil", "klan.komut.yonetim.sil",
+            "liste", "klan.komut.yonetim.liste",
+            "yenile", "klan.komut.yonetim.yenile",
+            "menu", "klan.komut.yonetim.menu",
+            "gui", "klan.komut.yonetim.menu"
+    );
+
     @Override
     public boolean onCommand(CommandSender gonderen, Command komut, String etiket, String[] args) {
         if (args.length == 0) {
@@ -48,10 +56,24 @@ public class KlanYonetimKomutu implements CommandExecutor, TabCompleter {
         }
 
         String alt = args[0].toLowerCase(TR);
+
+        String izinDugumu = IZIN_ESLEME.get(alt);
+        if (izinDugumu != null && !gonderen.hasPermission(izinDugumu)) {
+            gonder(gonderen, "genel.izin-yok");
+            return true;
+        }
+
         switch (alt) {
+            case "menu", "gui" -> {
+                if (!(gonderen instanceof org.bukkit.entity.Player oyuncu)) {
+                    gonder(gonderen, "genel.oyuncu-degil");
+                    return true;
+                }
+                new com.klaneklentisi.klan.gui.admin.AdminAnaMenu(eklenti, oyuncu).ac();
+            }
             case "sil" -> {
                 if (args.length < 2) {
-                    gonderen.sendMessage(Mesajlar.renkli("&cKullanım: /klanyonetim sil <isim>"));
+                    gonderen.sendMessage(Mesajlar.renkli("&c➤ Kullanım: &f/klanyonetim sil <isim>"));
                     return true;
                 }
                 if (yonetici.klanBul(args[1]).isEmpty()) {
@@ -65,7 +87,7 @@ public class KlanYonetimKomutu implements CommandExecutor, TabCompleter {
             }
             case "liste" -> {
                 for (Klan klan : yonetici.tumKlanlar()) {
-                    gonderen.sendMessage(Mesajlar.renkli("&7- &f" + klan.getIsim() + " &8[&7" + klan.getEtiket() + "&8]"));
+                    gonderen.sendMessage(Mesajlar.renkli("&8➤ &f" + klan.getIsim() + " &8[&7" + klan.getEtiket() + "&8]"));
                 }
             }
             case "yenile" -> {
@@ -73,7 +95,7 @@ public class KlanYonetimKomutu implements CommandExecutor, TabCompleter {
                 mesajlar.yukle();
                 gonder(gonderen, "yonetim.yenilendi");
             }
-            default -> gonderen.sendMessage(Mesajlar.renkli("&cBilinmeyen komut. /klanyonetim yazınız."));
+            default -> gonderen.sendMessage(Mesajlar.renkli("&c✖ Bilinmeyen komut. /klanyonetim yazınız."));
         }
         return true;
     }
@@ -81,7 +103,7 @@ public class KlanYonetimKomutu implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender gonderen, Command komut, String etiket, String[] args) {
         if (args.length == 1) {
-            return List.of("sil", "liste", "yenile").stream()
+            return List.of("sil", "liste", "yenile", "menu").stream()
                     .filter(s -> s.startsWith(args[0].toLowerCase(TR)))
                     .collect(Collectors.toList());
         }

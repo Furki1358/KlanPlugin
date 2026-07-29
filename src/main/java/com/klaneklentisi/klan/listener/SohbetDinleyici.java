@@ -42,13 +42,21 @@ public class SohbetDinleyici implements Listener {
             return;
         }
 
-        if (!yonetici.sohbetModuAcikMi(oyuncu.getUniqueId())) return;
+        if (yonetici.sohbetModuAcikMi(oyuncu.getUniqueId())) {
+            Optional<Klan> klanOpt = yonetici.klanBul(oyuncu.getUniqueId());
+            if (klanOpt.isEmpty()) return;
+            olay.setCancelled(true);
+            String duzMetin = PlainTextComponentSerializer.plainText().serialize(olay.message());
+            klanKomutu.klanSohbetMesajiGonder(klanOpt.get(), oyuncu, duzMetin);
+            return;
+        }
 
-        Optional<Klan> klanOpt = yonetici.klanBul(oyuncu.getUniqueId());
-        if (klanOpt.isEmpty()) return;
-
-        olay.setCancelled(true);
-        String duzMetin = PlainTextComponentSerializer.plainText().serialize(olay.message());
-        klanKomutu.klanSohbetMesajiGonder(klanOpt.get(), oyuncu, duzMetin);
+        if (yonetici.mSohbetModuAcikMi(oyuncu.getUniqueId())) {
+            Optional<Klan> klanOpt = yonetici.klanBul(oyuncu.getUniqueId());
+            if (klanOpt.isEmpty()) return;
+            olay.setCancelled(true);
+            String duzMetin = PlainTextComponentSerializer.plainText().serialize(olay.message());
+            klanKomutu.klanMuttefikSohbetiGonder(klanOpt.get(), oyuncu, duzMetin);
+        }
     }
 }

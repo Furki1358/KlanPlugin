@@ -32,7 +32,7 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
     private static final List<String> ALT_KOMUTLAR = Arrays.asList(
             "yardim", "olustur", "sil", "bilgi", "liste", "davet", "kabul", "reddet",
             "katil", "ayril", "at", "yukselt", "indir", "devret", "katilimturu",
-            "etiket", "aciklama", "us", "muttefik", "rakip", "sohbet", "msohbet", "menu", "gui"
+            "etiket", "aciklama", "us", "muttefik", "rakip", "sohbet", "msohbet", "liderlik", "istatistik", "menu", "gui"
     );
 
     private final KlanEklentisi eklenti;
@@ -86,7 +86,9 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
             Map.entry("muttefik", "klan.komut.muttefik"),
             Map.entry("rakip", "klan.komut.rakip"),
             Map.entry("sohbet", "klan.komut.sohbet"),
-            Map.entry("msohbet", "klan.komut.msohbet")
+            Map.entry("msohbet", "klan.komut.msohbet"),
+            Map.entry("liderlik", "klan.komut.liderlik"),
+            Map.entry("istatistik", "klan.komut.istatistik")
     );
 
     @Override
@@ -109,7 +111,15 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
         }
 
         switch (alt) {
-            case "yardim" -> yardimGoster(gonderen);
+            case "yardim" -> {
+                int sayfa = 1;
+                if (args.length >= 2) {
+                    try {
+                        sayfa = Integer.parseInt(args[1]);
+                    } catch (NumberFormatException ignored) { /* varsayılan 1 kalır */ }
+                }
+                yardimGoster(gonderen, sayfa);
+            }
             case "olustur" -> olustur(gonderen, args);
             case "sil" -> sil(gonderen, args);
             case "bilgi" -> bilgi(gonderen, args);
@@ -131,6 +141,8 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
             case "rakip" -> muttefikRakip(gonderen, args, false);
             case "sohbet" -> sohbet(gonderen, args);
             case "msohbet" -> msohbet(gonderen, args);
+            case "liderlik" -> liderlikGoster(gonderen, 1);
+            case "istatistik" -> istatistikGoster(gonderen, args);
             case "menu", "gui" -> menuAc(gonderen);
             default -> gonder(gonderen, "genel.bilinmeyen-komut");
         }
@@ -138,10 +150,52 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
     }
 
     private void yardimGoster(CommandSender gonderen) {
-        List<String> satirlar = mesajlarListesi("yardim-metni");
-        for (String satir : satirlar) {
-            gonderen.sendMessage(Mesajlar.renkli(satir));
+        yardimGoster(gonderen, 1);
+    }
+
+    public void yardimGoster(CommandSender gonderen, int sayfa) {
+        List<String> tumSatirlar = mesajlarListesi("yardim-metni");
+        if (tumSatirlar.isEmpty()) return;
+
+        String baslikSatiri = tumSatirlar.get(0);
+        List<String> komutSatirlari = tumSatirlar.subList(1, tumSatirlar.size());
+
+        int sayfaBasi = 8;
+        int toplamSayfa = Math.max(1, (int) Math.ceil(komutSatirlari.size() / (double) sayfaBasi));
+        int guvenliSayfa = Math.min(Math.max(1, sayfa), toplamSayfa);
+
+        gonderen.sendMessage(Mesajlar.renkli(baslikSatiri));
+        int baslangic = (guvenliSayfa - 1) * sayfaBasi;
+        int bitis = Math.min(baslangic + sayfaBasi, komutSatirlari.size());
+        for (int i = baslangic; i < bitis; i++) {
+            gonderen.sendMessage(Mesajlar.renkli(komutSatirlari.get(i)));
         }
+
+        String sayfaBilgisi = Mesajlar.renkli("&8━━━ &7Sayfa " + guvenliSayfa + "/" + toplamSayfa + " &8━━━");
+        gonderen.sendMessage(sayfaBilgisi);
+
+        if (!(gonderen instanceof Player) || toplamSayfa <= 1) return;
+
+        int nihaiSayfa = guvenliSayfa;
+        var bilesenler = new java.util.ArrayList<net.kyori.adventure.text.Component>();
+        if (nihaiSayfa > 1) {
+            bilesenler.add(com.klaneklentisi.klan.util.Butonlar.buton(
+                    mesajlar.hamMetin("liderlik.onceki-buton"),
+                    net.kyori.adventure.text.format.NamedTextColor.YELLOW, null,
+                    p -> yardimGoster(p, nihaiSayfa - 1)));
+        }
+        if (nihaiSayfa < toplamSayfa) {
+            if (!bilesenler.isEmpty()) {
+                bilesenler.add(net.kyori.adventure.text.Component.text("    "));
+            }
+            bilesenler.add(com.klaneklentisi.klan.util.Butonlar.buton(
+                    mesajlar.hamMetin("liderlik.sonraki-buton"),
+                    net.kyori.adventure.text.format.NamedTextColor.YELLOW, null,
+                    p -> yardimGoster(p, nihaiSayfa + 1)));
+        }
+        net.kyori.adventure.text.Component satir = net.kyori.adventure.text.Component.empty();
+        for (var b : bilesenler) satir = satir.append(b);
+        gonderen.sendMessage(satir);
     }
 
     private List<String> mesajlarListesi(String anahtar) {
@@ -825,6 +879,89 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
                 gonder(alici, anahtar, yer);
             }
         }
+    }
+
+    // -----------------------------------------------------------------
+    // LİDERLİK TABLOSU (KDR) - sohbette sayfa sayfa, tıklanabilir gezinme
+    // -----------------------------------------------------------------
+    public void liderlikGoster(CommandSender gonderen, int sayfa) {
+        var liste = eklenti.getIstatistikYoneticisi().siraliListe();
+        int sayfaBasi = Math.max(1, eklenti.getConfig().getInt("istatistik.sayfa-basi", 8));
+        int toplamSayfa = Math.max(1, (int) Math.ceil(liste.size() / (double) sayfaBasi));
+        int guvenliSayfa = Math.min(Math.max(1, sayfa), toplamSayfa);
+
+        gonderen.sendMessage(mesajlar.baslik("liderlik.baslik",
+                harita("sayfa", String.valueOf(guvenliSayfa), "toplam", String.valueOf(toplamSayfa))));
+
+        if (liste.isEmpty()) {
+            gonderen.sendMessage(mesajlar.al("liderlik.bos"));
+            return;
+        }
+
+        int baslangic = (guvenliSayfa - 1) * sayfaBasi;
+        int bitis = Math.min(baslangic + sayfaBasi, liste.size());
+        for (int i = baslangic; i < bitis; i++) {
+            var girdi = liste.get(i);
+            String isim = Bukkit.getOfflinePlayer(girdi.getKey()).getName();
+            gonderen.sendMessage(mesajlar.al("liderlik.satir", harita(
+                    "sira", String.valueOf(i + 1),
+                    "oyuncu", isim == null ? "?" : isim,
+                    "oldurme", String.valueOf(girdi.getValue().getOldurme()),
+                    "olme", String.valueOf(girdi.getValue().getOlme()),
+                    "oran", String.valueOf(girdi.getValue().getOran()))));
+        }
+
+        if (!(gonderen instanceof Player)) return; // butonlar sadece oyunculara anlamlı
+
+        int nihaiSayfa = guvenliSayfa;
+        int nihaiToplam = toplamSayfa;
+        var bilesenler = new java.util.ArrayList<net.kyori.adventure.text.Component>();
+        if (nihaiSayfa > 1) {
+            bilesenler.add(com.klaneklentisi.klan.util.Butonlar.buton(
+                    mesajlar.hamMetin("liderlik.onceki-buton"),
+                    net.kyori.adventure.text.format.NamedTextColor.YELLOW, null,
+                    p -> liderlikGoster(p, nihaiSayfa - 1)));
+        }
+        if (nihaiSayfa < nihaiToplam) {
+            if (!bilesenler.isEmpty()) {
+                bilesenler.add(net.kyori.adventure.text.Component.text("    "));
+            }
+            bilesenler.add(com.klaneklentisi.klan.util.Butonlar.buton(
+                    mesajlar.hamMetin("liderlik.sonraki-buton"),
+                    net.kyori.adventure.text.format.NamedTextColor.YELLOW, null,
+                    p -> liderlikGoster(p, nihaiSayfa + 1)));
+        }
+        if (!bilesenler.isEmpty()) {
+            net.kyori.adventure.text.Component satir = net.kyori.adventure.text.Component.empty();
+            for (var b : bilesenler) satir = satir.append(b);
+            gonderen.sendMessage(satir);
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // BİREYSEL İSTATİSTİK (KDR)
+    // -----------------------------------------------------------------
+    private void istatistikGoster(CommandSender gonderen, String[] args) {
+        OfflinePlayer hedef;
+        if (args.length >= 2) {
+            hedef = Bukkit.getOfflinePlayer(args[1]);
+        } else if (gonderen instanceof Player oyuncu) {
+            hedef = oyuncu;
+        } else {
+            gonder(gonderen, "kullanim.istatistik");
+            return;
+        }
+
+        if (hedef.getName() == null) {
+            gonder(gonderen, "istatistik.oyuncu-bulunamadi");
+            return;
+        }
+
+        var istatistik = eklenti.getIstatistikYoneticisi().getIstatistik(hedef.getUniqueId());
+        gonder(gonderen, "istatistik.baslik", harita("oyuncu", hedef.getName()));
+        gonder(gonderen, "istatistik.oldurme", harita("sayi", String.valueOf(istatistik.getOldurme())));
+        gonder(gonderen, "istatistik.olme", harita("sayi", String.valueOf(istatistik.getOlme())));
+        gonder(gonderen, "istatistik.oran", harita("oran", String.valueOf(istatistik.getOran())));
     }
 
     private void menuAc(CommandSender gonderen) {

@@ -47,6 +47,7 @@ public class AnaMenu extends Menu {
         if (klan == null) {
             envanter.setItem(13, Esya.olustur(Material.NETHER_STAR,
                     mesajlar.baslik("menu.ana.olustur"), mesajlar.alListe("menu.ana.olustur-aciklama")));
+            envanter.setItem(20, Esya.olustur(Material.GOLDEN_SWORD, mesajlar.baslik("menu.ana.liderlik")));
             envanter.setItem(22, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.ana.kapat")));
             return;
         }
@@ -62,6 +63,7 @@ public class AnaMenu extends Menu {
         boolean sohbetAcik = yonetici.sohbetModuAcikMi(oyuncu.getUniqueId());
         envanter.setItem(19, Esya.olustur(Material.WRITABLE_BOOK,
                 mesajlar.baslik(sohbetAcik ? "menu.ana.sohbet-ac" : "menu.ana.sohbet-kapali")));
+        envanter.setItem(20, Esya.olustur(Material.GOLDEN_SWORD, mesajlar.baslik("menu.ana.liderlik")));
 
         envanter.setItem(22, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.ana.kapat")));
     }
@@ -77,6 +79,7 @@ public class AnaMenu extends Menu {
         }
 
         if (klan == null) {
+            if (slot == 20) new LiderlikMenu(eklenti, oyuncu, 0).ac();
             if (slot == 22) oyuncu.closeInventory();
             return;
         }
@@ -99,6 +102,7 @@ public class AnaMenu extends Menu {
                 yonetici.sohbetModunuDegistir(oyuncu.getUniqueId());
                 yenile();
             }
+            case 20 -> new LiderlikMenu(eklenti, oyuncu, 0).ac();
             case 22 -> oyuncu.closeInventory();
             default -> {}
         }

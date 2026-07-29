@@ -28,6 +28,8 @@ us-sistemi:
 sohbet:
   # Klan sohbeti formatı - {etiket}, {rutbe}, {oyuncu}, {mesaj}
   format: "&8[&6{etiket}&8] &7{rutbe} &f{oyuncu}&8: &f{mesaj}"
+  # Müttefik sohbeti formatı - klan + tüm müttefiklerin görür
+  muttefik-format: "&8[&b⚔M&8] &7{rutbe} &f{oyuncu}&8: &b{mesaj}"
 
 muttefik-rakip:
   # Bir klan en fazla kaç müttefik/rakip edinebilir (0 = sınırsız)

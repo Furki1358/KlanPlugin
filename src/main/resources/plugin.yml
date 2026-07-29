@@ -46,6 +46,8 @@ permissions:
       klan.komut.rakip: true
       klan.komut.sohbet: true
       klan.komut.msohbet: true
+      klan.komut.liderlik: true
+      klan.komut.istatistik: true
 
   klan.yonetici:
     description: Klan yönetim komutlarını ve admin GUI'sini kullanma izni (varsayılan op).
@@ -125,6 +127,12 @@ permissions:
     default: true
   klan.komut.msohbet:
     description: Müttefik sohbetini kullanma izni.
+    default: true
+  klan.komut.liderlik:
+    description: KDR liderlik tablosunu görüntüleme izni.
+    default: true
+  klan.komut.istatistik:
+    description: Kendi/başka oyuncunun KDR istatistiğini görüntüleme izni.
     default: true
 
   klan.komut.yonetim.sil:

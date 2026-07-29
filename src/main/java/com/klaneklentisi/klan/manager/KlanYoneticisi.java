@@ -36,6 +36,8 @@ public class KlanYoneticisi {
     private final Map<UUID, String> davetler = new HashMap<>();
     /** klan sohbet modunda olan oyuncular */
     private final Set<UUID> sohbetModunda = new HashSet<>();
+    /** müttefik sohbet modunda olan oyuncular */
+    private final Set<UUID> mSohbetModunda = new HashSet<>();
 
     public KlanYoneticisi(Plugin eklenti, KlanDeposu depo) {
         this.eklenti = eklenti;
@@ -335,9 +337,81 @@ public class KlanYoneticisi {
     }
 
     public void sohbetModunuDegistir(UUID oyuncu) {
+        mSohbetModunda.remove(oyuncu); // ikisi aynı anda açık olamaz
         if (!sohbetModunda.remove(oyuncu)) {
             sohbetModunda.add(oyuncu);
         }
+    }
+
+    public boolean mSohbetModuAcikMi(UUID oyuncu) {
+        return mSohbetModunda.contains(oyuncu);
+    }
+
+    public void mSohbetModunuDegistir(UUID oyuncu) {
+        sohbetModunda.remove(oyuncu); // ikisi aynı anda açık olamaz
+        if (!mSohbetModunda.remove(oyuncu)) {
+            mSohbetModunda.add(oyuncu);
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Admin GUI için zorla işlemler (rütbe/yetki kontrolü yapılmaz,
+    // çağıran taraf klan.yonetici iznini zaten kontrol etmiş olmalı)
+    // ---------------------------------------------------------------
+
+    /** Bir üyeyi rütbesine bakılmaksızın klandan çıkarır. Lider çıkarılırsa otomatik yeni lider atanır. */
+    public Sonuc zorlaCikar(Klan klan, UUID hedef) {
+        Rutbe hedefRutbe = klan.getRutbe(hedef);
+        if (hedefRutbe == null) return Sonuc.KLAN_YOK;
+
+        klan.getUyeler().remove(hedef);
+        oyuncuKlanCache.remove(hedef);
+
+        if (klan.getUyeler().isEmpty()) {
+            klanSil(klan.getIsim());
+            return Sonuc.BASARILI;
+        }
+
+        if (hedefRutbe == Rutbe.LIDER) {
+            UUID yeniLider = klan.getUyeler().entrySet().stream()
+                    .max((a, b) -> Integer.compare(a.getValue().getSeviye(), b.getValue().getSeviye()))
+                    .map(Map.Entry::getKey)
+                    .orElse(null);
+            if (yeniLider != null) {
+                klan.getUyeler().put(yeniLider, Rutbe.LIDER);
+                klan.setKurucu(yeniLider);
+            }
+        }
+
+        depo.kaydet(klan);
+        return Sonuc.BASARILI;
+    }
+
+    /** Belirtilen üyeyi rütbesine bakılmaksızın klanın yeni lideri yapar, eski lideri yönetici yapar. */
+    public Sonuc zorlaLiderYap(Klan klan, UUID yeniLider) {
+        if (!klan.uyeMi(yeniLider)) return Sonuc.KLAN_YOK;
+
+        for (var girdi : klan.getUyeler().entrySet()) {
+            if (girdi.getValue() == Rutbe.LIDER && !girdi.getKey().equals(yeniLider)) {
+                klan.getUyeler().put(girdi.getKey(), Rutbe.YONETICI);
+            }
+        }
+        klan.getUyeler().put(yeniLider, Rutbe.LIDER);
+        klan.setKurucu(yeniLider);
+        depo.kaydet(klan);
+        return Sonuc.BASARILI;
+    }
+
+    /** Klanın üs konumunu sıfırlar. */
+    public void zorlaUsSil(Klan klan) {
+        klan.setUs(null);
+        depo.kaydet(klan);
+    }
+
+    /** Katılım türünü yetki kontrolü olmadan değiştirir. */
+    public void zorlaKatilimTuru(Klan klan, KatilimTuru tur) {
+        klan.setKatilimTuru(tur);
+        depo.kaydet(klan);
     }
 
     public void kaydet(Klan klan) {

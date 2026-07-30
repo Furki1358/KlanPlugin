@@ -48,6 +48,16 @@ public class KlanYonetimKomutu implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender gonderen, Command komut, String etiket, String[] args) {
+        try {
+            return komutIsle(gonderen, args);
+        } catch (Exception hata) {
+            eklenti.getLoglayici().hataKaydet("/klanyonetim komutu (" + String.join(" ", args) + ")", hata);
+            gonder(gonderen, "genel.beklenmeyen-hata");
+            return true;
+        }
+    }
+
+    private boolean komutIsle(CommandSender gonderen, String[] args) {
         if (args.length == 0) {
             for (String satir : eklenti.getLangYaml().getStringList("yonetim-yardim-metni")) {
                 gonderen.sendMessage(Mesajlar.renkli(satir));
@@ -93,6 +103,7 @@ public class KlanYonetimKomutu implements CommandExecutor, TabCompleter {
             case "yenile" -> {
                 eklenti.reloadConfig();
                 mesajlar.yukle();
+                eklenti.getKomutAyarlari().yukle();
                 gonder(gonderen, "yonetim.yenilendi");
             }
             default -> gonderen.sendMessage(Mesajlar.renkli("&c✖ Bilinmeyen komut. /klanyonetim yazınız."));

@@ -11,8 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -29,15 +27,15 @@ public class KlanYoneticisi {
     private final KlanDeposu depo;
 
     /** anahtar = klan ismi (küçük harf) */
-    private final Map<String, Klan> klanlar = new HashMap<>();
+    private final Map<String, Klan> klanlar = new java.util.concurrent.ConcurrentHashMap<>();
     /** oyuncu UUID -> klan ismi (küçük harf), hızlı arama için cache */
-    private final Map<UUID, String> oyuncuKlanCache = new HashMap<>();
+    private final Map<UUID, String> oyuncuKlanCache = new java.util.concurrent.ConcurrentHashMap<>();
     /** oyuncu UUID -> davet eden klan ismi (küçük harf) */
-    private final Map<UUID, String> davetler = new HashMap<>();
+    private final Map<UUID, String> davetler = new java.util.concurrent.ConcurrentHashMap<>();
     /** klan sohbet modunda olan oyuncular */
-    private final Set<UUID> sohbetModunda = new HashSet<>();
+    private final Set<UUID> sohbetModunda = java.util.concurrent.ConcurrentHashMap.newKeySet();
     /** müttefik sohbet modunda olan oyuncular */
-    private final Set<UUID> mSohbetModunda = new HashSet<>();
+    private final Set<UUID> mSohbetModunda = java.util.concurrent.ConcurrentHashMap.newKeySet();
 
     public KlanYoneticisi(Plugin eklenti, KlanDeposu depo) {
         this.eklenti = eklenti;
@@ -107,10 +105,25 @@ public class KlanYoneticisi {
         return isim != null && isim.length() >= min && isim.length() <= maks && GECERLI_ISIM.matcher(isim).matches();
     }
 
-    private boolean etiketGecerliMi(String etiket) {
+    public boolean etiketGecerliMi(String etiket) {
         int min = ayarlar().getInt("genel.min-etiket-uzunlugu", 2);
         int maks = ayarlar().getInt("genel.maks-etiket-uzunlugu", 6);
         return etiket != null && etiket.length() >= min && etiket.length() <= maks && GECERLI_ISIM.matcher(etiket).matches();
+    }
+
+    /**
+     * Açıklama metnini güvenli hale getirir: renk kodu enjeksiyonunu (&, §) engeller
+     * ve config'te tanımlı azami uzunluğu aşan kısmı keser. Hem komut hem GUI bu
+     * metoddan geçirilmeden açıklama kaydetmemelidir.
+     */
+    public String aciklamaTemizle(String metin) {
+        if (metin == null) return "";
+        String temiz = metin.replace("&", "").replace("§", "").trim();
+        int maksUzunluk = ayarlar().getInt("genel.maks-aciklama-uzunlugu", 100);
+        if (temiz.length() > maksUzunluk) {
+            temiz = temiz.substring(0, maksUzunluk);
+        }
+        return temiz;
     }
 
     // ---------------------------------------------------------------
@@ -165,7 +178,15 @@ public class KlanYoneticisi {
         if (hedef.getUniqueId().equals(davetEden.getUniqueId())) return Sonuc.KENDISI;
         if (oyuncuKlanCache.containsKey(hedef.getUniqueId())) return Sonuc.ZATEN_KLANDA;
 
-        davetler.put(hedef.getUniqueId(), klan.getIsim().toLowerCase(TR));
+        String klanIsmiKucuk = klan.getIsim().toLowerCase(TR);
+        davetler.put(hedef.getUniqueId(), klanIsmiKucuk);
+
+        // Davet süresiz açık kalmasın - config'te belirtilen süre sonunda otomatik iptal olur.
+        // remove(key, value) kasıtlı: bu arada BAŞKA bir klan davet ettiyse onu silmez.
+        long suresiSaniye = ayarlar().getLong("genel.davet-suresi-saniye", 300);
+        org.bukkit.Bukkit.getScheduler().runTaskLater(eklenti,
+                () -> davetler.remove(hedef.getUniqueId(), klanIsmiKucuk), suresiSaniye * 20L);
+
         return Sonuc.BASARILI;
     }
 
@@ -213,6 +234,7 @@ public class KlanYoneticisi {
 
         klan.getUyeler().remove(oyuncu.getUniqueId());
         oyuncuKlanCache.remove(oyuncu.getUniqueId());
+        temizleSohbetModu(oyuncu.getUniqueId());
 
         if (klan.getUyeler().isEmpty()) {
             klanSil(klan.getIsim());
@@ -231,8 +253,15 @@ public class KlanYoneticisi {
 
         klan.getUyeler().remove(hedef.getUniqueId());
         oyuncuKlanCache.remove(hedef.getUniqueId());
+        temizleSohbetModu(hedef.getUniqueId());
         depo.kaydet(klan);
         return Sonuc.BASARILI;
+    }
+
+    /** Klandan çıkan/atılan oyuncunun klan/müttefik sohbet modu bayrağını temizler. */
+    private void temizleSohbetModu(UUID uid) {
+        sohbetModunda.remove(uid);
+        mSohbetModunda.remove(uid);
     }
 
     public Sonuc rutbeYukselt(Klan klan, Player yetkili, OfflinePlayer hedef) {
@@ -366,6 +395,7 @@ public class KlanYoneticisi {
 
         klan.getUyeler().remove(hedef);
         oyuncuKlanCache.remove(hedef);
+        temizleSohbetModu(hedef);
 
         if (klan.getUyeler().isEmpty()) {
             klanSil(klan.getIsim());

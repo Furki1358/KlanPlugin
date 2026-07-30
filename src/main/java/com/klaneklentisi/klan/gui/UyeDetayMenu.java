@@ -83,16 +83,19 @@ public class UyeDetayMenu extends Menu {
 
         switch (slot) {
             case 10 -> {
+                if (!izinVarMi("TERFI")) return;
                 sonuc = yonetici.rutbeYukselt(klan, oyuncu, hedef());
                 mesajGoster(sonuc, "yukselt");
                 yenile();
             }
             case 11 -> {
+                if (!izinVarMi("INDIR")) return;
                 sonuc = yonetici.rutbeIndir(klan, oyuncu, hedef());
                 mesajGoster(sonuc, "indir");
                 yenile();
             }
             case 15 -> {
+                if (!izinVarMi("AT")) return;
                 sonuc = yonetici.uyeAt(klan, oyuncu, hedef());
                 if (sonuc == KlanYoneticisi.Sonuc.BASARILI) {
                     new UyelerMenu(eklenti, oyuncu, klan, gelinenSayfa).ac();
@@ -101,6 +104,7 @@ public class UyeDetayMenu extends Menu {
                 }
             }
             case 16 -> {
+                if (!izinVarMi("DEVRET")) return;
                 sonuc = yonetici.liderlikDevret(klan, oyuncu, hedef());
                 if (sonuc == KlanYoneticisi.Sonuc.BASARILI) {
                     new AnaMenu(eklenti, oyuncu).ac();

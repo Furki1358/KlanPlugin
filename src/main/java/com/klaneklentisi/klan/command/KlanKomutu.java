@@ -67,36 +67,6 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
         return m;
     }
 
-    /** Sabit komut ID'sini Bukkit izin düğümüne eşler (LuckPerms ile ayrıntılı kısıtlama için). */
-    private static final Map<String, String> IZIN_ESLEME = Map.ofEntries(
-            Map.entry("YARDIM", "klan.komut.yardim"),
-            Map.entry("MENU", "klan.komut.menu"),
-            Map.entry("OLUSTUR", "klan.komut.olustur"),
-            Map.entry("SIL", "klan.komut.sil"),
-            Map.entry("BILGI", "klan.komut.bilgi"),
-            Map.entry("LISTE", "klan.komut.liste"),
-            Map.entry("DAVET", "klan.komut.davet"),
-            Map.entry("KABUL", "klan.komut.kabul"),
-            Map.entry("REDDET", "klan.komut.reddet"),
-            Map.entry("KATIL", "klan.komut.katil"),
-            Map.entry("AYRIL", "klan.komut.ayril"),
-            Map.entry("AT", "klan.komut.at"),
-            Map.entry("TERFI", "klan.komut.yukselt"),
-            Map.entry("INDIR", "klan.komut.indir"),
-            Map.entry("DEVRET", "klan.komut.devret"),
-            Map.entry("KATILIMTURU", "klan.komut.katilimturu"),
-            Map.entry("ETIKET", "klan.komut.etiket"),
-            Map.entry("ACIKLAMA", "klan.komut.aciklama"),
-            Map.entry("US", "klan.komut.us"),
-            Map.entry("SEMBOL", "klan.komut.sembol"),
-            Map.entry("MUTTEFIK", "klan.komut.muttefik"),
-            Map.entry("RAKIP", "klan.komut.rakip"),
-            Map.entry("SOHBET", "klan.komut.sohbet"),
-            Map.entry("MSOHBET", "klan.komut.msohbet"),
-            Map.entry("LIDERLIK", "klan.komut.liderlik"),
-            Map.entry("ISTATISTIK", "klan.komut.istatistik")
-    );
-
     @Override
     public boolean onCommand(CommandSender gonderen, Command komut, String etiket, String[] args) {
         try {
@@ -111,6 +81,10 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
     private boolean komutIsle(CommandSender gonderen, String[] args) {
         if (args.length == 0) {
             if (gonderen instanceof Player) {
+                if (!gonderen.hasPermission(komutAyarlari.izinDugumu("MENU"))) {
+                    gonder(gonderen, "genel.izin-yok");
+                    return true;
+                }
                 menuAc(gonderen);
             } else {
                 yardimGoster(gonderen);
@@ -125,8 +99,8 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        String izinDugumu = IZIN_ESLEME.get(id);
-        if (izinDugumu != null && !gonderen.hasPermission(izinDugumu)) {
+        String izinDugumu = komutAyarlari.izinDugumu(id);
+        if (!gonderen.hasPermission(izinDugumu)) {
             gonder(gonderen, "genel.izin-yok");
             return true;
         }
@@ -621,7 +595,7 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
         String yeniEtiket = args[1];
         int min = eklenti.getConfig().getInt("genel.min-etiket-uzunlugu", 2);
         int maks = eklenti.getConfig().getInt("genel.maks-etiket-uzunlugu", 6);
-        if (yeniEtiket.length() < min || yeniEtiket.length() > maks) {
+        if (!yonetici.etiketGecerliMi(yeniEtiket)) {
             gonder(gonderen, "etiket.gecersiz", harita("min", String.valueOf(min), "maks", String.valueOf(maks)));
             return;
         }
@@ -655,7 +629,7 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
             return;
         }
         String metin = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        klan.setAciklama(metin);
+        klan.setAciklama(yonetici.aciklamaTemizle(metin));
         yonetici.kaydet(klan);
         gonder(gonderen, "aciklama.basarili");
     }

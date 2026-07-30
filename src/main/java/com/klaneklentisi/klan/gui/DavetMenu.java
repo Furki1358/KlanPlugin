@@ -42,6 +42,7 @@ public class DavetMenu extends Menu {
     public void tikla(InventoryClickEvent olay) {
         switch (olay.getSlot()) {
             case 11 -> {
+                if (!izinVarMi("KABUL")) return;
                 KlanYoneticisi.Sonuc sonuc = yonetici.davetKabulEt(oyuncu);
                 if (sonuc == KlanYoneticisi.Sonuc.BASARILI) {
                     oyuncu.sendMessage(mesajlar.al("kabul.basarili", Map.of("klan", davetEdenKlan.getIsim())));
@@ -59,6 +60,7 @@ public class DavetMenu extends Menu {
                 }
             }
             case 15 -> {
+                if (!izinVarMi("REDDET")) return;
                 yonetici.davetReddet(oyuncu);
                 oyuncu.sendMessage(mesajlar.al("reddet.basarili"));
                 oyuncu.closeInventory();

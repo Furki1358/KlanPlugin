@@ -13,103 +13,129 @@ komutlar:
     etiketler: [yardım, yardim, help]
     kullanim: ""
     aciklama: "Bu yardım menüsünü göster"
+    izin: klan.komut.yardim
   MENU:
     etiketler: [menü, menu, gui]
     kullanim: ""
     aciklama: "Tıklanabilir klan menüsünü aç"
+    izin: klan.komut.menu
   OLUSTUR:
     etiketler: [oluştur, olustur, kur]
     kullanim: "<isim> <etiket>"
     aciklama: "Yeni klan kur"
+    izin: klan.komut.olustur
   SIL:
     etiketler: [sil]
     kullanim: "onayla"
     aciklama: "Klanını sil"
+    izin: klan.komut.sil
   BILGI:
     etiketler: [bilgi]
     kullanim: "[isim]"
     aciklama: "Klan bilgilerini görüntüle"
+    izin: klan.komut.bilgi
   LISTE:
     etiketler: [liste]
     kullanim: ""
     aciklama: "Tüm klanları listele"
+    izin: klan.komut.liste
   DAVET:
     etiketler: [davet]
     kullanim: "<oyuncu>"
     aciklama: "Oyuncuyu klana davet et"
+    izin: klan.komut.davet
   KABUL:
     etiketler: [kabul]
     kullanim: ""
     aciklama: "Bekleyen daveti kabul et"
+    izin: klan.komut.kabul
   REDDET:
     etiketler: [reddet]
     kullanim: ""
     aciklama: "Bekleyen daveti reddet"
+    izin: klan.komut.reddet
   KATIL:
     etiketler: [katıl, katil]
     kullanim: "<isim>"
     aciklama: "Açık klana katıl"
+    izin: klan.komut.katil
   AYRIL:
     etiketler: [ayrıl, ayril]
     kullanim: ""
     aciklama: "Klandan ayrıl"
+    izin: klan.komut.ayril
   AT:
     etiketler: [at]
     kullanim: "<oyuncu>"
     aciklama: "Üyeyi klandan at"
+    izin: klan.komut.at
   TERFI:
     etiketler: [terfi, yükselt, yukselt]
     kullanim: "<oyuncu>"
     aciklama: "Üyeyi terfi ettir"
+    izin: klan.komut.yukselt
   INDIR:
     etiketler: [indir]
     kullanim: "<oyuncu>"
     aciklama: "Üyenin rütbesini düşür"
+    izin: klan.komut.indir
   DEVRET:
     etiketler: [devret]
     kullanim: "<oyuncu>"
     aciklama: "Liderliği devret"
+    izin: klan.komut.devret
   KATILIMTURU:
     etiketler: [katılımtürü, katilimturu]
     kullanim: "<açık|davetli>"
     aciklama: "Katılım türünü ayarla"
+    izin: klan.komut.katilimturu
   ETIKET:
     etiketler: [etiket]
     kullanim: "<etiket>"
     aciklama: "Klan etiketini değiştir"
+    izin: klan.komut.etiket
   ACIKLAMA:
     etiketler: [açıklama, aciklama]
     kullanim: "<metin>"
     aciklama: "Klan açıklamasını değiştir"
+    izin: klan.komut.aciklama
   US:
     etiketler: [üs, us]
     kullanim: "[ayarla]"
     aciklama: "Klan üssünü ayarla/kullan"
+    izin: klan.komut.us
   SEMBOL:
     etiketler: [sembol]
     kullanim: ""
     aciklama: "Klan sembolünü ayarla (GUI açılır)"
+    izin: klan.komut.sembol
   MUTTEFIK:
     etiketler: [müttefik, muttefik]
     kullanim: "<ekle|çıkar> <isim>"
     aciklama: "Müttefik yönet"
+    izin: klan.komut.muttefik
   RAKIP:
     etiketler: [rakip]
     kullanim: "<ekle|çıkar> <isim>"
     aciklama: "Rakip yönet"
+    izin: klan.komut.rakip
   SOHBET:
     etiketler: [sohbet]
     kullanim: "[mesaj]"
     aciklama: "Klan sohbeti kullan"
+    izin: klan.komut.sohbet
   MSOHBET:
     etiketler: [ittifaksohbet, msohbet]
     kullanim: "[mesaj]"
     aciklama: "Müttefik sohbeti kullan"
+    izin: klan.komut.msohbet
   LIDERLIK:
     etiketler: [liderlik]
     kullanim: ""
     aciklama: "KDR liderlik tablosunu göster"
+    izin: klan.komut.liderlik
   ISTATISTIK:
     etiketler: [istatistik]
     kullanim: "[oyuncu]"
     aciklama: "Öldürme/ölme istatistiklerini göster"
+    izin: klan.komut.istatistik

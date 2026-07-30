@@ -12,6 +12,7 @@ import com.klaneklentisi.klan.storage.KlanDeposu;
 import com.klaneklentisi.klan.storage.YamlKlanDeposu;
 import com.klaneklentisi.klan.util.Mesajlar;
 import com.klaneklentisi.klan.util.VaultEkonomi;
+import com.klaneklentisi.klan.util.KomutAyarlari;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,11 +27,14 @@ public class KlanEklentisi extends JavaPlugin {
     private IstatistikYoneticisi istatistikYoneticisi;
     private IstatistikDeposu istatistikDeposu;
     private VaultEkonomi vaultEkonomi;
+    private KomutAyarlari komutAyarlari;
+    private com.klaneklentisi.klan.util.Loglayici loglayici;
     private final com.klaneklentisi.klan.gui.GirdiYoneticisi girdiYoneticisi = new com.klaneklentisi.klan.gui.GirdiYoneticisi();
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        this.loglayici = new com.klaneklentisi.klan.util.Loglayici(this);
 
         this.depo = new YamlKlanDeposu(this);
         this.klanYoneticisi = new KlanYoneticisi(this, depo);
@@ -43,6 +47,7 @@ public class KlanEklentisi extends JavaPlugin {
         istatistikYoneticisi.yukle();
 
         this.vaultEkonomi = new VaultEkonomi(this);
+        this.komutAyarlari = new KomutAyarlari(this);
 
         this.klanKomutu = new KlanKomutu(this);
         getCommand("klan").setExecutor(klanKomutu);
@@ -53,7 +58,7 @@ public class KlanEklentisi extends JavaPlugin {
         getCommand("klanyonetim").setTabCompleter(yonetimKomutu);
 
         getServer().getPluginManager().registerEvents(new SohbetDinleyici(this, klanKomutu), this);
-        getServer().getPluginManager().registerEvents(new com.klaneklentisi.klan.gui.GuiDinleyici(), this);
+        getServer().getPluginManager().registerEvents(new com.klaneklentisi.klan.gui.GuiDinleyici(this), this);
         getServer().getPluginManager().registerEvents(new OlumDinleyici(this), this);
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -99,6 +104,14 @@ public class KlanEklentisi extends JavaPlugin {
 
     public VaultEkonomi getVaultEkonomi() {
         return vaultEkonomi;
+    }
+
+    public KomutAyarlari getKomutAyarlari() {
+        return komutAyarlari;
+    }
+
+    public com.klaneklentisi.klan.util.Loglayici getLoglayici() {
+        return loglayici;
     }
 
     public com.klaneklentisi.klan.gui.GirdiYoneticisi getGirdiYoneticisi() {

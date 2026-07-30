@@ -74,6 +74,7 @@ public class KlanBilgiMenu extends Menu {
             return;
         }
         if (slot == 15 && klan.getKatilimTuru() == KatilimTuru.ACIK) {
+            if (!izinVarMi("KATIL")) return;
             KlanYoneticisi.Sonuc sonuc = yonetici.klanaKatil(klan, oyuncu);
             switch (sonuc) {
                 case BASARILI -> {

@@ -1,6 +1,7 @@
 package com.klaneklentisi.klan.model;
 
 import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ public class Klan {
     private final Set<String> muttefikler = new HashSet<>();   // müttefik klan isimleri (küçük harf)
     private final Set<String> rakipler = new HashSet<>();      // rakip klan isimleri (küçük harf)
     private Location us; // klan üssü / home noktası
+    private ItemStack sembol; // klanın GUI'lerde gösterilen ikonu (oyuncu tarafından atanır)
     private KatilimTuru katilimTuru = KatilimTuru.DAVETLI;
     private long olusturulmaZamani;
     private double kasa = 0.0; // basit klan bankası (ileride ekonomi modülü için)
@@ -93,6 +95,14 @@ public class Klan {
 
     public void setUs(Location us) {
         this.us = us;
+    }
+
+    public ItemStack getSembol() {
+        return sembol;
+    }
+
+    public void setSembol(ItemStack sembol) {
+        this.sembol = sembol;
     }
 
     public KatilimTuru getKatilimTuru() {

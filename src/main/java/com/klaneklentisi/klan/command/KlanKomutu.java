@@ -29,20 +29,17 @@ import java.util.stream.Collectors;
 public class KlanKomutu implements CommandExecutor, TabCompleter {
 
     private static final Locale TR = Locale.forLanguageTag("tr");
-    private static final List<String> ALT_KOMUTLAR = Arrays.asList(
-            "yardim", "olustur", "sil", "bilgi", "liste", "davet", "kabul", "reddet",
-            "katil", "ayril", "at", "yukselt", "indir", "devret", "katilimturu",
-            "etiket", "aciklama", "us", "muttefik", "rakip", "sohbet", "msohbet", "liderlik", "istatistik", "menu", "gui"
-    );
 
     private final KlanEklentisi eklenti;
     private final KlanYoneticisi yonetici;
     private final Mesajlar mesajlar;
+    private final com.klaneklentisi.klan.util.KomutAyarlari komutAyarlari;
 
     public KlanKomutu(KlanEklentisi eklenti) {
         this.eklenti = eklenti;
         this.yonetici = eklenti.getKlanYoneticisi();
         this.mesajlar = eklenti.getMesajlar();
+        this.komutAyarlari = eklenti.getKomutAyarlari();
     }
 
     private void gonder(CommandSender alici, String anahtar, Map<String, String> yer) {
@@ -53,6 +50,15 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
         alici.sendMessage(mesajlar.al(anahtar));
     }
 
+    /** Çok satırlı bilgi blokları (bilgi, istatistik, liste vb.) için ön ek eklemeden gönderir. */
+    private void gonderBlok(CommandSender alici, String anahtar, Map<String, String> yer) {
+        alici.sendMessage(mesajlar.alOnEksiz(anahtar, yer));
+    }
+
+    private void gonderBlok(CommandSender alici, String anahtar) {
+        alici.sendMessage(mesajlar.alOnEksiz(anahtar, null));
+    }
+
     private Map<String, String> harita(String... kv) {
         Map<String, String> m = new HashMap<>();
         for (int i = 0; i < kv.length; i += 2) {
@@ -61,38 +67,48 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
         return m;
     }
 
-    /** Alt komut adını Bukkit izin düğümüne eşler (LuckPerms ile ayrıntılı kısıtlama için). */
+    /** Sabit komut ID'sini Bukkit izin düğümüne eşler (LuckPerms ile ayrıntılı kısıtlama için). */
     private static final Map<String, String> IZIN_ESLEME = Map.ofEntries(
-            Map.entry("yardim", "klan.komut.yardim"),
-            Map.entry("menu", "klan.komut.menu"),
-            Map.entry("gui", "klan.komut.menu"),
-            Map.entry("olustur", "klan.komut.olustur"),
-            Map.entry("sil", "klan.komut.sil"),
-            Map.entry("bilgi", "klan.komut.bilgi"),
-            Map.entry("liste", "klan.komut.liste"),
-            Map.entry("davet", "klan.komut.davet"),
-            Map.entry("kabul", "klan.komut.kabul"),
-            Map.entry("reddet", "klan.komut.reddet"),
-            Map.entry("katil", "klan.komut.katil"),
-            Map.entry("ayril", "klan.komut.ayril"),
-            Map.entry("at", "klan.komut.at"),
-            Map.entry("yukselt", "klan.komut.yukselt"),
-            Map.entry("indir", "klan.komut.indir"),
-            Map.entry("devret", "klan.komut.devret"),
-            Map.entry("katilimturu", "klan.komut.katilimturu"),
-            Map.entry("etiket", "klan.komut.etiket"),
-            Map.entry("aciklama", "klan.komut.aciklama"),
-            Map.entry("us", "klan.komut.us"),
-            Map.entry("muttefik", "klan.komut.muttefik"),
-            Map.entry("rakip", "klan.komut.rakip"),
-            Map.entry("sohbet", "klan.komut.sohbet"),
-            Map.entry("msohbet", "klan.komut.msohbet"),
-            Map.entry("liderlik", "klan.komut.liderlik"),
-            Map.entry("istatistik", "klan.komut.istatistik")
+            Map.entry("YARDIM", "klan.komut.yardim"),
+            Map.entry("MENU", "klan.komut.menu"),
+            Map.entry("OLUSTUR", "klan.komut.olustur"),
+            Map.entry("SIL", "klan.komut.sil"),
+            Map.entry("BILGI", "klan.komut.bilgi"),
+            Map.entry("LISTE", "klan.komut.liste"),
+            Map.entry("DAVET", "klan.komut.davet"),
+            Map.entry("KABUL", "klan.komut.kabul"),
+            Map.entry("REDDET", "klan.komut.reddet"),
+            Map.entry("KATIL", "klan.komut.katil"),
+            Map.entry("AYRIL", "klan.komut.ayril"),
+            Map.entry("AT", "klan.komut.at"),
+            Map.entry("TERFI", "klan.komut.yukselt"),
+            Map.entry("INDIR", "klan.komut.indir"),
+            Map.entry("DEVRET", "klan.komut.devret"),
+            Map.entry("KATILIMTURU", "klan.komut.katilimturu"),
+            Map.entry("ETIKET", "klan.komut.etiket"),
+            Map.entry("ACIKLAMA", "klan.komut.aciklama"),
+            Map.entry("US", "klan.komut.us"),
+            Map.entry("SEMBOL", "klan.komut.sembol"),
+            Map.entry("MUTTEFIK", "klan.komut.muttefik"),
+            Map.entry("RAKIP", "klan.komut.rakip"),
+            Map.entry("SOHBET", "klan.komut.sohbet"),
+            Map.entry("MSOHBET", "klan.komut.msohbet"),
+            Map.entry("LIDERLIK", "klan.komut.liderlik"),
+            Map.entry("ISTATISTIK", "klan.komut.istatistik")
     );
 
     @Override
     public boolean onCommand(CommandSender gonderen, Command komut, String etiket, String[] args) {
+        try {
+            return komutIsle(gonderen, args);
+        } catch (Exception hata) {
+            eklenti.getLoglayici().hataKaydet("/klan komutu (" + String.join(" ", args) + ")", hata);
+            gonder(gonderen, "genel.beklenmeyen-hata");
+            return true;
+        }
+    }
+
+    private boolean komutIsle(CommandSender gonderen, String[] args) {
         if (args.length == 0) {
             if (gonderen instanceof Player) {
                 menuAc(gonderen);
@@ -102,16 +118,21 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        String alt = args[0].toLowerCase(TR);
+        String girilenEtiket = args[0];
+        String id = komutAyarlari.idBul(girilenEtiket);
+        if (id == null) {
+            gonder(gonderen, "genel.bilinmeyen-komut");
+            return true;
+        }
 
-        String izinDugumu = IZIN_ESLEME.get(alt);
+        String izinDugumu = IZIN_ESLEME.get(id);
         if (izinDugumu != null && !gonderen.hasPermission(izinDugumu)) {
             gonder(gonderen, "genel.izin-yok");
             return true;
         }
 
-        switch (alt) {
-            case "yardim" -> {
+        switch (id) {
+            case "YARDIM" -> {
                 int sayfa = 1;
                 if (args.length >= 2) {
                     try {
@@ -120,30 +141,31 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
                 }
                 yardimGoster(gonderen, sayfa);
             }
-            case "olustur" -> olustur(gonderen, args);
-            case "sil" -> sil(gonderen, args);
-            case "bilgi" -> bilgi(gonderen, args);
-            case "liste" -> liste(gonderen);
-            case "davet" -> davet(gonderen, args);
-            case "kabul" -> kabul(gonderen);
-            case "reddet" -> reddet(gonderen);
-            case "katil" -> katil(gonderen, args);
-            case "ayril" -> ayril(gonderen);
-            case "at" -> at(gonderen, args);
-            case "yukselt" -> rutbeDegistir(gonderen, args, true);
-            case "indir" -> rutbeDegistir(gonderen, args, false);
-            case "devret" -> devret(gonderen, args);
-            case "katilimturu" -> katilimTuru(gonderen, args);
-            case "etiket" -> etiketDegistir(gonderen, args);
-            case "aciklama" -> aciklamaDegistir(gonderen, args);
-            case "us" -> us(gonderen, args);
-            case "muttefik" -> muttefikRakip(gonderen, args, true);
-            case "rakip" -> muttefikRakip(gonderen, args, false);
-            case "sohbet" -> sohbet(gonderen, args);
-            case "msohbet" -> msohbet(gonderen, args);
-            case "liderlik" -> liderlikGoster(gonderen, 1);
-            case "istatistik" -> istatistikGoster(gonderen, args);
-            case "menu", "gui" -> menuAc(gonderen);
+            case "OLUSTUR" -> olustur(gonderen, args);
+            case "SIL" -> sil(gonderen, args);
+            case "BILGI" -> bilgi(gonderen, args);
+            case "LISTE" -> liste(gonderen);
+            case "DAVET" -> davet(gonderen, args);
+            case "KABUL" -> kabul(gonderen);
+            case "REDDET" -> reddet(gonderen);
+            case "KATIL" -> katil(gonderen, args);
+            case "AYRIL" -> ayril(gonderen);
+            case "AT" -> at(gonderen, args);
+            case "TERFI" -> rutbeDegistir(gonderen, args, true);
+            case "INDIR" -> rutbeDegistir(gonderen, args, false);
+            case "DEVRET" -> devret(gonderen, args);
+            case "KATILIMTURU" -> katilimTuru(gonderen, args);
+            case "ETIKET" -> etiketDegistir(gonderen, args);
+            case "ACIKLAMA" -> aciklamaDegistir(gonderen, args);
+            case "US" -> us(gonderen, args);
+            case "SEMBOL" -> sembolAc(gonderen);
+            case "MUTTEFIK" -> muttefikRakip(gonderen, args, true);
+            case "RAKIP" -> muttefikRakip(gonderen, args, false);
+            case "SOHBET" -> sohbet(gonderen, args);
+            case "MSOHBET" -> msohbet(gonderen, args);
+            case "LIDERLIK" -> liderlikGoster(gonderen, 1);
+            case "ISTATISTIK" -> istatistikGoster(gonderen, args);
+            case "MENU" -> menuAc(gonderen);
             default -> gonder(gonderen, "genel.bilinmeyen-komut");
         }
         return true;
@@ -154,17 +176,14 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
     }
 
     public void yardimGoster(CommandSender gonderen, int sayfa) {
-        List<String> tumSatirlar = mesajlarListesi("yardim-metni");
-        if (tumSatirlar.isEmpty()) return;
-
-        String baslikSatiri = tumSatirlar.get(0);
-        List<String> komutSatirlari = tumSatirlar.subList(1, tumSatirlar.size());
+        List<String> komutSatirlari = komutAyarlari.yardimSatirlariOlustur();
+        if (komutSatirlari.isEmpty()) return;
 
         int sayfaBasi = 8;
         int toplamSayfa = Math.max(1, (int) Math.ceil(komutSatirlari.size() / (double) sayfaBasi));
         int guvenliSayfa = Math.min(Math.max(1, sayfa), toplamSayfa);
 
-        gonderen.sendMessage(Mesajlar.renkli(baslikSatiri));
+        gonderen.sendMessage(mesajlar.baslik("yardim.baslik"));
         int baslangic = (guvenliSayfa - 1) * sayfaBasi;
         int bitis = Math.min(baslangic + sayfaBasi, komutSatirlari.size());
         for (int i = baslangic; i < bitis; i++) {
@@ -196,10 +215,6 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
         net.kyori.adventure.text.Component satir = net.kyori.adventure.text.Component.empty();
         for (var b : bilesenler) satir = satir.append(b);
         gonderen.sendMessage(satir);
-    }
-
-    private List<String> mesajlarListesi(String anahtar) {
-        return eklenti.getLangYaml().getStringList(anahtar);
     }
 
     private boolean oyuncuMu(CommandSender gonderen) {
@@ -325,20 +340,20 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
     /** Belirli bir klanın bilgi ekranını gönderir. Hem komuttan hem GUI'den çağrılabilir. */
     public void bilgiGoster(CommandSender gonderen, Klan klan) {
         String liderAdi = Bukkit.getOfflinePlayer(klan.getKurucu()).getName();
-        gonder(gonderen, "bilgi.baslik", harita("isim", klan.getIsim(), "etiket", klan.getEtiket()));
-        gonder(gonderen, "bilgi.aciklama", harita("aciklama", klan.getAciklama().isEmpty() ? "-" : klan.getAciklama()));
-        gonder(gonderen, "bilgi.lider", harita("lider", liderAdi == null ? "?" : liderAdi));
-        gonder(gonderen, "bilgi.uye-sayisi", harita("sayi", String.valueOf(klan.getUyeSayisi())));
-        gonder(gonderen, "bilgi.katilim-turu", harita("tur", klan.getKatilimTuru().name()));
+        gonderBlok(gonderen, "bilgi.baslik", harita("isim", klan.getIsim(), "etiket", klan.getEtiket()));
+        gonderBlok(gonderen, "bilgi.aciklama", harita("aciklama", klan.getAciklama().isEmpty() ? "-" : klan.getAciklama()));
+        gonderBlok(gonderen, "bilgi.lider", harita("lider", liderAdi == null ? "?" : liderAdi));
+        gonderBlok(gonderen, "bilgi.uye-sayisi", harita("sayi", String.valueOf(klan.getUyeSayisi())));
+        gonderBlok(gonderen, "bilgi.katilim-turu", harita("tur", klan.getKatilimTuru().name()));
 
         String bos = mesajlar.hamMetin("bilgi.liste-bos");
         String muttefikListesi = klan.getMuttefikler().isEmpty() ? bos : String.join(", ", klan.getMuttefikler());
         String rakipListesi = klan.getRakipler().isEmpty() ? bos : String.join(", ", klan.getRakipler());
-        gonder(gonderen, "bilgi.muttefikler", harita("liste", muttefikListesi));
-        gonder(gonderen, "bilgi.rakipler", harita("liste", rakipListesi));
+        gonderBlok(gonderen, "bilgi.muttefikler", harita("liste", muttefikListesi));
+        gonderBlok(gonderen, "bilgi.rakipler", harita("liste", rakipListesi));
 
         String tarih = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date(klan.getOlusturulmaZamani()));
-        gonder(gonderen, "bilgi.kurulus-tarihi", harita("tarih", tarih));
+        gonderBlok(gonderen, "bilgi.kurulus-tarihi", harita("tarih", tarih));
     }
 
     // -----------------------------------------------------------------
@@ -346,13 +361,13 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
     // -----------------------------------------------------------------
     private void liste(CommandSender gonderen) {
         var klanlar = yonetici.tumKlanlar();
-        gonder(gonderen, "liste.baslik", harita("sayi", String.valueOf(klanlar.size())));
+        gonderBlok(gonderen, "liste.baslik", harita("sayi", String.valueOf(klanlar.size())));
         if (klanlar.isEmpty()) {
-            gonder(gonderen, "liste.bos");
+            gonderBlok(gonderen, "liste.bos");
             return;
         }
         for (Klan klan : klanlar) {
-            gonder(gonderen, "liste.satir", harita(
+            gonderBlok(gonderen, "liste.satir", harita(
                     "isim", klan.getIsim(), "etiket", klan.getEtiket(),
                     "uyeSayisi", String.valueOf(klan.getUyeSayisi())));
         }
@@ -707,6 +722,19 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
         Location baslangicKonum = oyuncu.getLocation().clone();
         boolean hareketIptal = eklenti.getConfig().getBoolean("us-sistemi.hareket-ederse-iptal", true);
 
+        // Sohbette 3, 2, 1 geri sayımı göster (son 5 saniyeden az veya eşitse her saniye)
+        int gosterilecekSaniyeSiniri = Math.min(bekleme, 5);
+        for (int s = 1; s <= gosterilecekSaniyeSiniri; s++) {
+            int kalanSaniye = s;
+            long gecikme = (bekleme - s) * 20L;
+            if (gecikme < 0) continue;
+            Bukkit.getScheduler().runTaskLater(eklenti, () -> {
+                if (!oyuncu.isOnline()) return;
+                if (hareketIptal && konumFarkliMi(baslangicKonum, oyuncu.getLocation())) return;
+                oyuncu.sendMessage(com.klaneklentisi.klan.util.Mesajlar.renkli("&e&l" + kalanSaniye + "&e..."));
+            }, gecikme);
+        }
+
         Bukkit.getScheduler().runTaskLater(eklenti, () -> {
             if (!oyuncu.isOnline()) return;
             if (hareketIptal && konumFarkliMi(baslangicKonum, oyuncu.getLocation())) {
@@ -894,7 +922,7 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
                 harita("sayfa", String.valueOf(guvenliSayfa), "toplam", String.valueOf(toplamSayfa))));
 
         if (liste.isEmpty()) {
-            gonderen.sendMessage(mesajlar.al("liderlik.bos"));
+            gonderen.sendMessage(mesajlar.alOnEksiz("liderlik.bos", null));
             return;
         }
 
@@ -903,7 +931,7 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
         for (int i = baslangic; i < bitis; i++) {
             var girdi = liste.get(i);
             String isim = Bukkit.getOfflinePlayer(girdi.getKey()).getName();
-            gonderen.sendMessage(mesajlar.al("liderlik.satir", harita(
+            gonderen.sendMessage(mesajlar.alOnEksiz("liderlik.satir", harita(
                     "sira", String.valueOf(i + 1),
                     "oyuncu", isim == null ? "?" : isim,
                     "oldurme", String.valueOf(girdi.getValue().getOldurme()),
@@ -958,15 +986,31 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
         }
 
         var istatistik = eklenti.getIstatistikYoneticisi().getIstatistik(hedef.getUniqueId());
-        gonder(gonderen, "istatistik.baslik", harita("oyuncu", hedef.getName()));
-        gonder(gonderen, "istatistik.oldurme", harita("sayi", String.valueOf(istatistik.getOldurme())));
-        gonder(gonderen, "istatistik.olme", harita("sayi", String.valueOf(istatistik.getOlme())));
-        gonder(gonderen, "istatistik.oran", harita("oran", String.valueOf(istatistik.getOran())));
+        gonderBlok(gonderen, "istatistik.baslik", harita("oyuncu", hedef.getName()));
+        gonderBlok(gonderen, "istatistik.oldurme", harita("sayi", String.valueOf(istatistik.getOldurme())));
+        gonderBlok(gonderen, "istatistik.olme", harita("sayi", String.valueOf(istatistik.getOlme())));
+        gonderBlok(gonderen, "istatistik.oran", harita("oran", String.valueOf(istatistik.getOran())));
     }
 
     private void menuAc(CommandSender gonderen) {
         if (!oyuncuMu(gonderen)) return;
         new com.klaneklentisi.klan.gui.AnaMenu(eklenti, (Player) gonderen).ac();
+    }
+
+    private void sembolAc(CommandSender gonderen) {
+        if (!oyuncuMu(gonderen)) return;
+        Player oyuncu = (Player) gonderen;
+        Optional<Klan> klanOpt = yonetici.klanBul(oyuncu.getUniqueId());
+        if (klanOpt.isEmpty()) {
+            gonder(gonderen, "genel.klanin-yok");
+            return;
+        }
+        Rutbe rutbe = klanOpt.get().getRutbe(oyuncu.getUniqueId());
+        if (rutbe == null || rutbe.getSeviye() < Rutbe.YONETICI.getSeviye()) {
+            gonder(gonderen, "genel.yetkin-yok");
+            return;
+        }
+        new com.klaneklentisi.klan.gui.SembolAyarlaMenu(eklenti, oyuncu, klanOpt.get()).ac();
     }
 
     // -----------------------------------------------------------------
@@ -976,22 +1020,27 @@ public class KlanKomutu implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender gonderen, Command komut, String etiket, String[] args) {
         if (args.length == 1) {
             String baslangic = args[0].toLowerCase(TR);
-            return ALT_KOMUTLAR.stream().filter(s -> s.startsWith(baslangic)).collect(Collectors.toList());
+            return komutAyarlari.tumBirincilEtiketler().stream()
+                    .filter(s -> s.toLowerCase(TR).startsWith(baslangic)).collect(Collectors.toList());
         }
         if (args.length == 2) {
-            String alt = args[0].toLowerCase(TR);
-            return switch (alt) {
-                case "davet", "at", "yukselt", "indir", "devret" -> Bukkit.getOnlinePlayers().stream()
+            String id = komutAyarlari.idBul(args[0]);
+            if (id == null) return new ArrayList<>();
+            return switch (id) {
+                case "DAVET", "AT", "TERFI", "INDIR", "DEVRET" -> Bukkit.getOnlinePlayers().stream()
                         .map(Player::getName).collect(Collectors.toList());
-                case "katil", "bilgi" -> yonetici.tumKlanlar().stream()
+                case "KATIL", "BILGI" -> yonetici.tumKlanlar().stream()
                         .map(Klan::getIsim).collect(Collectors.toList());
-                case "katilimturu" -> Arrays.asList("acik", "davetli");
-                case "muttefik", "rakip" -> Arrays.asList("ekle", "cikar");
+                case "KATILIMTURU" -> Arrays.asList("acik", "davetli");
+                case "MUTTEFIK", "RAKIP" -> Arrays.asList("ekle", "cikar");
                 default -> new ArrayList<>();
             };
         }
-        if (args.length == 3 && (args[0].equalsIgnoreCase("muttefik") || args[0].equalsIgnoreCase("rakip"))) {
-            return yonetici.tumKlanlar().stream().map(Klan::getIsim).collect(Collectors.toList());
+        if (args.length == 3) {
+            String id = komutAyarlari.idBul(args[0]);
+            if ("MUTTEFIK".equals(id) || "RAKIP".equals(id)) {
+                return yonetici.tumKlanlar().stream().map(Klan::getIsim).collect(Collectors.toList());
+            }
         }
         return new ArrayList<>();
     }

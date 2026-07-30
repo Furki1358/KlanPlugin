@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.klaneklentisi</groupId>
-    <artifactId>KlanEklentisi</artifactId>
-    <version>1.0.0</version>
+    <artifactId>FXKlan</artifactId>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
-    <name>KlanEklentisi</name>
-    <description>Türkçe klan sistemi eklentisi - Paper 1.21.11</description>
+    <name>FXKlan</name>
+    <description>FXKlan - Türkçe, GUI-öncelikli klan eklentisi - Paper 1.21.11</description>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

@@ -67,4 +67,18 @@ public abstract class Menu {
         envanter.clear();
         doldur();
     }
+
+    /**
+     * GUI'den yapılan bir aksiyonun ilgili komutla aynı Bukkit iznine sahip olup
+     * olmadığını kontrol eder (örn. SIL, ETIKET, TERFI...). İzin yoksa mesaj gönderir
+     * ve false döner. Bu olmadan GUI, LuckPerms ile kısıtlanmış komutları atlatabilirdi.
+     */
+    protected boolean izinVarMi(String komutId) {
+        String izinDugumu = eklenti.getKomutAyarlari().izinDugumu(komutId);
+        if (!oyuncu.hasPermission(izinDugumu)) {
+            oyuncu.sendMessage(mesajlar.al("genel.izin-yok"));
+            return false;
+        }
+        return true;
+    }
 }

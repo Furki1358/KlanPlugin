@@ -1,9 +1,9 @@
-name: KlanEklentisi
+name: FXKlan
 version: '${project.version}'
 main: com.klaneklentisi.klan.KlanEklentisi
 api-version: '1.21'
 author: Sen
-description: Türkçe klan sistemi - klan oluşturma, üyelik, rütbe, sohbet, üs, müttefik/rakip sistemi, GUI menüler
+description: FXKlan - Türkçe, GUI-öncelikli klan eklentisi (klan sistemi, KDR, liderlik tablosu, arazi/ekonomi eklenebilir)
 softdepend: [PlaceholderAPI, Vault, LuckPerms]
 
 commands:
@@ -42,6 +42,7 @@ permissions:
       klan.komut.etiket: true
       klan.komut.aciklama: true
       klan.komut.us: true
+      klan.komut.sembol: true
       klan.komut.muttefik: true
       klan.komut.rakip: true
       klan.komut.sohbet: true
@@ -115,6 +116,9 @@ permissions:
     default: true
   klan.komut.us:
     description: Klan üssünü ayarlama/kullanma izni.
+    default: true
+  klan.komut.sembol:
+    description: Klan sembolünü (ikonunu) ayarlama izni.
     default: true
   klan.komut.muttefik:
     description: Müttefik yönetme izni.

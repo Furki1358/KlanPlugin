@@ -1,4 +1,4 @@
-name: KlanEklentisi Derleme
+name: FXKlan Derleme ve Release
 
 on:
   push:
@@ -8,6 +8,8 @@ on:
 jobs:
   derle:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Kodu çek
         uses: actions/checkout@v4
@@ -22,8 +24,32 @@ jobs:
       - name: Maven ile derle
         run: mvn -B clean package
 
-      - name: Jar dosyasını yükle
+      - name: Sürüm numarasını oku
+        id: surum
+        run: |
+          VERSIYON=$(mvn -q -Dexpression=project.version -DforceStdout help:evaluate)
+          echo "versiyon=$VERSIYON" >> "$GITHUB_OUTPUT"
+
+      - name: Jar dosyasını artifact olarak yükle
         uses: actions/upload-artifact@v4
         with:
-          name: KlanEklentisi-jar
+          name: FXKlan-jar
           path: target/*.jar
+
+      - name: GitHub Release oluştur/güncelle
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.surum.outputs.versiyon }}
+          name: FXKlan v${{ steps.surum.outputs.versiyon }}
+          files: target/*.jar
+          body: |
+            **FXKlan v${{ steps.surum.outputs.versiyon }}**
+
+            Kurulum: Sadece jar dosyasını sunucunun `plugins/` klasörüne atmanız yeterlidir.
+            Ek/zorunlu bir bağımlılık gerekmez.
+
+            Opsiyonel entegrasyonlar (varsa otomatik algılanır):
+            - Vault (ekonomi/öldürme ödülü için) - herhangi bir güncel sürüm
+            - PlaceholderAPI - 2.11.x veya üzeri
+            - LuckPerms - herhangi bir güncel sürüm
+          generate_release_notes: true

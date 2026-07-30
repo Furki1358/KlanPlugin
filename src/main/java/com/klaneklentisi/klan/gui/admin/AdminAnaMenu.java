@@ -42,6 +42,7 @@ public class AdminAnaMenu extends Menu {
             case 15 -> {
                 eklenti.reloadConfig();
                 mesajlar.yukle();
+                eklenti.getKomutAyarlari().yukle();
                 oyuncu.sendMessage(mesajlar.al("yonetim.yenilendi"));
                 yenile();
             }

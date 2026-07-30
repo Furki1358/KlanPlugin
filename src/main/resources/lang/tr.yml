@@ -17,6 +17,7 @@ genel:
   kendine-islem-yapamazsin: "&c✖ Bu işlemi kendine yapamazsın."
   bilinmeyen-komut: "&c✖ Bilinmeyen komut. Yardım için: &f/klan yardim"
   izin-yok: "&c✖ Bu komutu kullanma iznin yok."
+  beklenmeyen-hata: "&c✖ Beklenmeyen bir hata oluştu, yönetici loglara bakmalı."
   onay-buton: "[✔ Onayla]"
   vazgec-buton: "[✖ Vazgeç]"
 
@@ -203,40 +204,15 @@ liderlik:
   sonraki-buton: "Sonraki ►"
   sayfa-yok: "&7Bu sayfada gösterilecek bir şey yok."
 
-yardim-metni:
-  - "&6&l❖═══ Klan Komutları ═══❖"
-  - "&f➤ /klan &7veya &f/klan menu &7- Tıklanabilir klan menüsünü aç"
-  - "&f➤ /klan olustur <isim> <etiket> &7- Yeni klan kur"
-  - "&f➤ /klan sil onayla &7- Klanını sil"
-  - "&f➤ /klan bilgi [isim] &7- Klan bilgilerini görüntüle"
-  - "&f➤ /klan liste &7- Tüm klanları listele"
-  - "&f➤ /klan davet <oyuncu> &7- Oyuncuyu klana davet et"
-  - "&f➤ /klan kabul &7- Bekleyen daveti kabul et"
-  - "&f➤ /klan reddet &7- Bekleyen daveti reddet"
-  - "&f➤ /klan katil <isim> &7- Açık klana katıl"
-  - "&f➤ /klan ayril &7- Klandan ayrıl"
-  - "&f➤ /klan at <oyuncu> &7- Üyeyi klandan at"
-  - "&f➤ /klan yukselt <oyuncu> &7- Üyenin rütbesini yükselt"
-  - "&f➤ /klan indir <oyuncu> &7- Üyenin rütbesini düşür"
-  - "&f➤ /klan devret <oyuncu> &7- Liderliği devret"
-  - "&f➤ /klan katilimturu <acik|davetli> &7- Katılım türünü ayarla"
-  - "&f➤ /klan etiket <etiket> &7- Klan etiketini değiştir"
-  - "&f➤ /klan aciklama <metin> &7- Klan açıklamasını değiştir"
-  - "&f➤ /klan us ayarla &7- Klan üssünü buraya ayarla"
-  - "&f➤ /klan us &7- Klan üssüne ışınlan"
-  - "&f➤ /klan muttefik <ekle|cikar> <isim> &7- Müttefik yönet"
-  - "&f➤ /klan rakip <ekle|cikar> <isim> &7- Rakip yönet"
-  - "&f➤ /klan sohbet [mesaj] &7- Klan sohbeti kullan"
-  - "&f➤ /klan msohbet [mesaj] &7- Müttefik sohbeti kullan (klan + müttefikler)"
-  - "&f➤ /klan liderlik &7- KDR liderlik tablosunu göster"
-  - "&f➤ /klan istatistik [oyuncu] &7- Öldürme/ölme istatistiklerini göster"
+yardim:
+  baslik: "&6&l❖═══ FXKlan Komutları ═══❖"
 
 yonetim-yardim-metni:
   - "&6&l❖═══ Klan Yönetim Komutları ═══❖"
   - "&f➤ /klanyonetim menu &7- Tıklanabilir admin menüsünü aç"
   - "&f➤ /klanyonetim sil <isim> &7- Bir klanı zorla sil"
   - "&f➤ /klanyonetim liste &7- Tüm klanları listele"
-  - "&f➤ /klanyonetim yenile &7- config.yml ve lang dosyasını yeniden yükle"
+  - "&f➤ /klanyonetim yenile &7- config.yml, komutlar.yml ve lang dosyasını yeniden yükle"
 
 # ===================================================
 #   GUI Menü Metinleri
@@ -338,6 +314,9 @@ menu:
     kabul: "&a✔ Kabul Et"
     reddet: "&c✖ Reddet"
     geri: "&7◄ Ana Menüye Dön"
+  sembol:
+    baslik: "&8❖ Klan Sembolünü Seç ❖"
+    ayarlandi: "&a✔ Klan sembolü güncellendi!"
 
 # ===================================================
 #   Admin GUI Menü Metinleri (/klanyonetim menu)

@@ -107,6 +107,11 @@ public class YamlKlanDeposu implements KlanDeposu {
             }
         }
 
+        if (yaml.contains("sembol")) {
+            org.bukkit.inventory.ItemStack sembol = yaml.getItemStack("sembol");
+            klan.setSembol(sembol);
+        }
+
         return klan;
     }
 
@@ -130,6 +135,9 @@ public class YamlKlanDeposu implements KlanDeposu {
 
         if (klan.getUs() != null) {
             yaml.set("us", klan.getUs());
+        }
+        if (klan.getSembol() != null) {
+            yaml.set("sembol", klan.getSembol());
         }
 
         try {

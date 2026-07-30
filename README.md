@@ -1,85 +1,68 @@
-# KlanEklentisi (v1.0.0 - MVP)
+# FXKlan
 
-Minecraft 1.21.11 / Paper için tamamen Türkçe, sıfırdan yazılmış klan (clan) eklentisi.
-Oyuncular herhangi bir mod olmadan (vanilla veya Fabric client fark etmeksizin) bağlanıp
-kullanabilir — bu tamamen sunucu tarafında (server-side) çalışan bir Paper plugin'idir.
+Minecraft (Paper 1.21.11) için Türkçe, **GUI-öncelikli** klan eklentisi. Oyuncular
+işlerinin çoğunu tıklanabilir menülerden yapar; sunucu sahibi ise komut isimlerinden
+mesajlara kadar hemen her şeyi metin dosyalarından düzenleyebilir.
 
-## Özellikler (MVP)
-- Klan oluşturma / silme
-- Üyelik: davet, kabul/reddet, açık klana direkt katılma, ayrılma, atma
-- Rütbe sistemi: Üye / Yönetici / Lider (yükseltme, indirme, liderlik devretme)
-- Klan içi sohbet (`/klan sohbet <mesaj>` veya toggle modu)
-- Klan üssü (home): `/klan us ayarla` ve `/klan us` (bekleme süreli, hareket ederse iptal)
-- Müttefik / Rakip sistemi
-- Klan bilgi ekranı, klan listesi
-- PlaceholderAPI desteği (varsa otomatik etkinleşir): `%klan_isim%`, `%klan_etiket%`,
-  `%klan_rutbe%`, `%klan_uye_sayisi%`, `%klan_lider%`
-- Tüm mesajlar `plugins/KlanEklentisi/lang/tr.yml` dosyasından **tamamen düzenlenebilir**
-- Tüm genel ayarlar `plugins/KlanEklentisi/config.yml` dosyasından düzenlenebilir
-- Veri depolama: YAML (her klan `plugins/KlanEklentisi/klanlar/<isim>.yml` dosyasında)
+## Kurulum
 
-## Jar Dosyasını Elde Etme (Kod Yazmadan, Sadece Tarayıcı ile)
+1. **[Releases](../../releases)** sayfasından en son `FXKlan-x.y.z.jar` dosyasını indirin.
+2. Sunucunun `plugins/` klasörüne atın, sunucuyu başlatın/yeniden başlatın.
+3. Ekstra hiçbir şey gerekmez. Aşağıdaki entegrasyonlar tamamen opsiyoneldir ve
+   kuruluysa otomatik devreye girer:
+   - **Vault** — öldürme ödülüne para eklemek isterseniz
+   - **PlaceholderAPI** — `%klan_isim%` gibi placeholder'lar için
+   - **LuckPerms** (veya herhangi bir izin eklentisi) — komutları tek tek açıp
+     kapatmak için (bkz. aşağıdaki İzinler bölümü)
 
-Bilgisayarında Java/Maven kurmana gerek yok. Bu proje `.github/workflows/build.yml`
-içinde hazır bir GitHub Actions ayarıyla geliyor — GitHub'ın sunucuları senin için
-otomatik derleyip jar dosyasını üretir.
+## Özellikler
 
-**Adımlar:**
+- Klan oluşturma / silme / üyelik / rütbe (Üye · Yönetici · Lider) / liderlik devri
+- Tamamen tıklanabilir GUI: `/klan` yazmak yeterli — üyeler, ayarlar, müttefik/rakip,
+  klan listesi, liderlik tablosu, hepsi menüden
+- Klan üssü: ışınlanırken sohbette 3-2-1 geri sayımı, hareket edilirse iptal
+- Klan sembolü/ikonu: istediğiniz eşyayı GUI'ye bırakarak klanınızın simgesi yapın
+- Klan sohbeti ve müttefik sohbeti (ayrı kanal)
+- KDR takibi, `/klan liderlik` (sayfalı, tıklanabilir gezinme), öldürme ödülü
+  (Vault parası ve/veya konsol komutu)
+- Davet, silme onayı gibi işlemler sohbette **tıklanabilir butonlarla** yapılır —
+  komut yazmaya gerek yok
+- Admin paneli: `/klanyonetim menu` — klanları yönetme, genel ayarları GUI'den değiştirme
+- Hatalar `plugins/FXKlan/loglar/hatalar.log` dosyasında toplanır
 
-1. [github.com](https://github.com) adresine git, yoksa ücretsiz bir hesap oluştur.
-2. Sağ üstteki **+** işaretine tıkla → **New repository**. İsim ver (örn. `klan-eklentisi`),
-   **Public** veya **Private** seçebilirsin, **Create repository** de.
-3. Açılan sayfada **"uploading an existing file"** linkine tıkla (veya *Add file* →
-   *Upload files*).
-4. Bu zip'i bilgisayarında aç, içindeki **tüm dosya ve klasörleri** (pom.xml, src/,
-   .github/ dahil) o sayfaya sürükle-bırak.
-5. Alt kısımdaki **Commit changes** butonuna bas.
-6. Üst menüden **Actions** sekmesine tıkla. Birkaç saniye içinde "KlanEklentisi
-   Derleme" adında bir çalışma başladığını göreceksin (sarı nokta → yeşil tik).
-   Genelde 30-60 saniye sürer.
-7. Çalışma bittiğinde (yeşil tik ✅) üzerine tıkla, sayfanın altında
-   **Artifacts** bölümünde **KlanEklentisi-jar** adında bir indirme linki
-   göreceksin. Ona tıkla, bir zip iner.
-8. O zip'in içinden çıkan `KlanEklentisi-1.0.0.jar` dosyasını sunucunun
-   `plugins/` klasörüne koy, sunucuyu başlat/yeniden başlat.
+## Yapılandırma Dosyaları
 
-**Bundan sonrası için:** Sana yeni bir özellik/düzeltme gönderdiğimde, sadece o
-dosyaları aynı GitHub reposuna tekrar yükleyip **Commit changes** demen yeterli —
-Actions otomatik yeniden derler, yeni jar birkaç saniye içinde **Actions** sekmesinde
-hazır olur. Hiç komut satırı kullanmana gerek yok.
+Hepsi `plugins/FXKlan/` klasöründe, sunucu ilk açılışta otomatik oluşturur:
 
+| Dosya | Ne işe yarar |
+|---|---|
+| `config.yml` | Genel ayarlar (isim/etiket uzunlukları, üs sistemi, sohbet formatı, KDR ödülleri) |
+| `komutlar.yml` | Her komutun ismini/takma adlarını değiştirin (örn. "terfi" yerine "yükselt" yapın) |
+| `lang/tr.yml` | Tüm oyuncu mesajları ve GUI metinleri |
+| `klanlar/*.yml` | Her klan kendi dosyasında saklanır |
+| `istatistikler.yml` | Oyuncu KDR verileri |
 
-## (İsteğe Bağlı) Kendi Bilgisayarında Manuel Derleme
+Değişiklik sonrası sunucuyu yeniden başlatmadan uygulamak için: `/klanyonetim yenile`
 
-Yukarıdaki GitHub Actions yöntemi yeterli; ama Java/Maven kuruluysa manuel de
-derleyebilirsin:
+## İzinler (LuckPerms uyumlu)
 
-- Java 21+
-- Maven 3.9+
-- Paper 1.21.11 (veya Paper 1.21.x, api-version 1.21 olduğu için genelde geriye dönük uyumludur)
+Her komutun ayrı bir izin düğümü vardır (`klan.komut.<isim>`), varsayılan olarak
+herkese açıktır. Belirli bir komutu belirli bir gruba kısıtlamak isterseniz
+LuckPerms ile o düğümü kaldırmanız yeterli. Admin komutları (`/klanyonetim`) için
+`klan.yonetici` izni gerekir (varsayılan: op).
 
-## Derleme
+## Kaynak Koddan Derleme
+
+Bu repo her `main` dalına yapılan pushta GitHub Actions ile otomatik derlenir ve
+**Releases** sayfasına jar olarak eklenir — genelde jar'ı Releases'ten indirmeniz
+yeterlidir. Kendiniz derlemek isterseniz (Java 21 + Maven gerekir):
+
 ```bash
 mvn clean package
 ```
-Derleme sonrası jar dosyası `target/KlanEklentisi-1.0.0.jar` içinde oluşur.
-Bu jar'ı sunucunun `plugins/` klasörüne koyup sunucuyu başlatmanız yeterli.
 
+## Sürüm Notu
 
-## Komutlar
-`/klan yardim` yazarak oyuncu içi tam komut listesini görebilirsiniz.
-Admin komutları için: `/klanyonetim yardim` (izin: `klan.yonetici`, varsayılan: op)
-
-## Yapılandırma dosyaları
-- `config.yml` — genel ayarlar (isim/etiket uzunlukları, üs sistemi, sohbet formatı, sınırlar)
-- `lang/tr.yml` — tüm oyuncu mesajları (ön ek dahil, `&` renk kodları ve `&#RRGGBB` hex destekli)
-
-## Sonraki adımlar için öneriler
-Bu MVP; ally/rival, üs, rütbe, sohbet gibi temel klan sistemini içerir. Bir sonraki
-aşamada konuştuğumuz gibi şunlar eklenebilir:
-- Klan seviyesi / XP sistemi
-- Klan ekonomisi (Vault entegrasyonu, klan kasası deposit/withdraw)
-- Klan savaşları (war) sistemi
-- Klan marketi
-- Sezon sistemi ve top klanlar sıralaması
-- MySQL/SQLite depolama seçeneği (mimari zaten `KlanDeposu` arayüzü üzerinden buna hazır)
+Şu an **beta** aşamasındadır (`1.0.x`). Her güncellemede sürüm numarası artar
+(`1.0.1` → `1.0.2` → ...) ve ilgili jar Releases sayfasında ayrı bir sürüm olarak
+görünür.

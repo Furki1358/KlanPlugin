@@ -31,6 +31,10 @@ public class OlumDinleyici implements Listener {
 
         if (!eklenti.getConfig().getBoolean("istatistik.aktif", true)) return;
 
+        if (odulEngelliMi(katil, olen)) {
+            return; // aynı klan/müttefik - istatistik sayıldı ama ödül verilmedi (farm istismarını önler)
+        }
+
         // Konsol komutları (örn. verilecek eşya/efekt) - {oyuncu} ve {hedef} yer tutucuları desteklenir
         List<String> komutlar = eklenti.getConfig().getStringList("istatistik.odul-komutlari");
         for (String komut : komutlar) {
@@ -50,5 +54,24 @@ public class OlumDinleyici implements Listener {
                     "hedef", olen.getName(),
                     "oran", String.valueOf(istatistik.getOran()))));
         }
+    }
+
+    /**
+     * Katil ve ölen aynı klandaysa veya klanları müttefikse ödülü engeller.
+     * Bu kontrol olmadan iki oyuncu (veya iki müttefik klan üyesi) birbirini
+     * güvenli şekilde tekrar tekrar öldürerek sınırsız para/ödül üretebilirdi.
+     */
+    private boolean odulEngelliMi(Player katil, Player olen) {
+        if (!eklenti.getConfig().getBoolean("istatistik.odul-sadece-dusman-klan", true)) {
+            return false; // sunucu sahibi bu korumayı bilerek kapatmış
+        }
+        var katilKlanOpt = eklenti.getKlanYoneticisi().klanBul(katil.getUniqueId());
+        var olenKlanOpt = eklenti.getKlanYoneticisi().klanBul(olen.getUniqueId());
+        if (katilKlanOpt.isEmpty() || olenKlanOpt.isEmpty()) return false;
+
+        var katilKlan = katilKlanOpt.get();
+        var olenKlan = olenKlanOpt.get();
+        if (katilKlan.getIsim().equalsIgnoreCase(olenKlan.getIsim())) return true; // aynı klan
+        return katilKlan.muttefikMi(olenKlan.getIsim()) || olenKlan.muttefikMi(katilKlan.getIsim());
     }
 }

@@ -62,6 +62,7 @@ public class AyarlarMenu extends Menu {
     public void tikla(InventoryClickEvent olay) {
         switch (olay.getSlot()) {
             case 11 -> {
+                if (!izinVarMi("KATILIMTURU")) return;
                 if (!yetkiVarMi(Rutbe.YONETICI)) {
                     oyuncu.sendMessage(mesajlar.al("menu.ayarlar.yetkisiz"));
                     return;
@@ -71,6 +72,7 @@ public class AyarlarMenu extends Menu {
                 yenile();
             }
             case 13 -> {
+                if (!izinVarMi("ETIKET")) return;
                 if (!yetkiVarMi(Rutbe.LIDER)) {
                     oyuncu.sendMessage(mesajlar.al("menu.ayarlar.yetkisiz"));
                     return;
@@ -80,6 +82,7 @@ public class AyarlarMenu extends Menu {
                 eklenti.getGirdiYoneticisi().girdiBekle(oyuncu.getUniqueId(), metin -> etiketIsle(metin));
             }
             case 15 -> {
+                if (!izinVarMi("ACIKLAMA")) return;
                 if (!yetkiVarMi(Rutbe.YONETICI)) {
                     oyuncu.sendMessage(mesajlar.al("menu.ayarlar.yetkisiz"));
                     return;
@@ -89,6 +92,7 @@ public class AyarlarMenu extends Menu {
                 eklenti.getGirdiYoneticisi().girdiBekle(oyuncu.getUniqueId(), metin -> aciklamaIsle(metin));
             }
             case 17 -> {
+                if (!izinVarMi("SEMBOL")) return;
                 if (!yetkiVarMi(Rutbe.YONETICI)) {
                     oyuncu.sendMessage(mesajlar.al("menu.ayarlar.yetkisiz"));
                     return;
@@ -96,18 +100,21 @@ public class AyarlarMenu extends Menu {
                 new com.klaneklentisi.klan.gui.SembolAyarlaMenu(eklenti, oyuncu, klan).ac();
             }
             case 21 -> {
+                if (!izinVarMi("SIL")) return;
                 if (!yetkiVarMi(Rutbe.LIDER)) {
                     oyuncu.sendMessage(mesajlar.al("menu.ayarlar.yetkisiz"));
                     return;
                 }
                 oyuncu.closeInventory();
                 String klanIsmi = klan.getIsim();
+                String izinDugumu = eklenti.getKomutAyarlari().izinDugumu("SIL");
                 oyuncu.sendMessage(mesajlar.al("sil.onay-gerekli"));
                 var onayButon = com.klaneklentisi.klan.util.Butonlar.buton(
                         mesajlar.hamMetin("sil.onay-buton"),
                         net.kyori.adventure.text.format.NamedTextColor.RED,
                         mesajlar.hamMetin("sil.onay-ipucu"),
                         p -> {
+                            if (!p.hasPermission(izinDugumu)) return;
                             var guncelKlan = yonetici.klanBul(p.getUniqueId());
                             if (guncelKlan.isPresent() && guncelKlan.get().getIsim().equalsIgnoreCase(klanIsmi)
                                     && guncelKlan.get().getRutbe(p.getUniqueId()) == com.klaneklentisi.klan.model.Rutbe.LIDER) {
@@ -129,7 +136,7 @@ public class AyarlarMenu extends Menu {
         }
         int min = eklenti.getConfig().getInt("genel.min-etiket-uzunlugu", 2);
         int maks = eklenti.getConfig().getInt("genel.maks-etiket-uzunlugu", 6);
-        if (metin.length() < min || metin.length() > maks) {
+        if (!yonetici.etiketGecerliMi(metin)) {
             oyuncu.sendMessage(mesajlar.al("etiket.gecersiz", Map.of("min", String.valueOf(min), "maks", String.valueOf(maks))));
             return;
         }
@@ -149,7 +156,7 @@ public class AyarlarMenu extends Menu {
             oyuncu.sendMessage(mesajlar.al("menu.girdi.iptal-edildi"));
             return;
         }
-        klan.setAciklama(metin);
+        klan.setAciklama(yonetici.aciklamaTemizle(metin));
         yonetici.kaydet(klan);
         oyuncu.sendMessage(mesajlar.al("aciklama.basarili"));
     }

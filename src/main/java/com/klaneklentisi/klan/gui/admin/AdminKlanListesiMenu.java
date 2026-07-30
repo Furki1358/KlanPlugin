@@ -46,12 +46,24 @@ public class AdminKlanListesiMenu extends Menu {
 
         for (int i = baslangic; i < bitis; i++) {
             Klan k = klanlar.get(i);
-            envanter.setItem(i - baslangic, Esya.olustur(Material.PAPER,
-                    "&f" + k.getIsim() + " &8[&7" + k.getEtiket() + "&8]",
-                    mesajlar.alListe("admin.klan-listesi.satir-aciklama", Map.of(
-                            "etiket", k.getEtiket(),
-                            "uyeSayisi", String.valueOf(k.getUyeSayisi()),
-                            "tur", k.getKatilimTuru().name()))));
+            List<String> lore = mesajlar.alListe("admin.klan-listesi.satir-aciklama", Map.of(
+                    "etiket", k.getEtiket(),
+                    "uyeSayisi", String.valueOf(k.getUyeSayisi()),
+                    "tur", k.getKatilimTuru().name()));
+            if (k.getSembol() != null) {
+                var esya = k.getSembol().clone();
+                esya.setAmount(1);
+                var meta = esya.getItemMeta();
+                if (meta != null) {
+                    meta.setDisplayName(com.klaneklentisi.klan.util.Mesajlar.renkli("&f" + k.getIsim() + " &8[&7" + k.getEtiket() + "&8]"));
+                    meta.setLore(lore);
+                    esya.setItemMeta(meta);
+                }
+                envanter.setItem(i - baslangic, esya);
+            } else {
+                envanter.setItem(i - baslangic, Esya.olustur(Material.PAPER,
+                        "&f" + k.getIsim() + " &8[&7" + k.getEtiket() + "&8]", lore));
+            }
         }
 
         if (sayfa > 0) {

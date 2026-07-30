@@ -29,7 +29,7 @@ public class KlanEklentisi extends JavaPlugin {
     private VaultEkonomi vaultEkonomi;
     private KomutAyarlari komutAyarlari;
     private com.klaneklentisi.klan.util.Loglayici loglayici;
-    private final com.klaneklentisi.klan.gui.GirdiYoneticisi girdiYoneticisi = new com.klaneklentisi.klan.gui.GirdiYoneticisi();
+    private final com.klaneklentisi.klan.gui.GirdiYoneticisi girdiYoneticisi = new com.klaneklentisi.klan.gui.GirdiYoneticisi(this);
 
     @Override
     public void onEnable() {
@@ -45,6 +45,7 @@ public class KlanEklentisi extends JavaPlugin {
         this.istatistikDeposu = new YamlIstatistikDeposu(this);
         this.istatistikYoneticisi = new IstatistikYoneticisi(this, istatistikDeposu);
         istatistikYoneticisi.yukle();
+        istatistikYoneticisi.otomatikKaydiBaslat();
 
         this.vaultEkonomi = new VaultEkonomi(this);
         this.komutAyarlari = new KomutAyarlari(this);
@@ -81,6 +82,7 @@ public class KlanEklentisi extends JavaPlugin {
             depo.kapat();
         }
         if (istatistikYoneticisi != null) {
+            istatistikYoneticisi.durdur();
             istatistikYoneticisi.kaydet();
         }
         getLogger().info("KlanEklentisi devre dışı bırakıldı, tüm klan verileri kaydedildi.");

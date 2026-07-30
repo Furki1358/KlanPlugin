@@ -40,6 +40,20 @@ public abstract class Menu {
     /** Bir slota tıklandığında çağrılır. */
     public abstract void tikla(InventoryClickEvent olay);
 
+    /**
+     * Bazı özel menüler (örn. klan sembolü seçme) belirli slotlarda normal eşya
+     * yerleştirme/alma işlemine izin vermek isteyebilir. Varsayılan olarak hiçbir
+     * slotta buna izin verilmez (tüm tıklamalar iptal edilir).
+     */
+    public boolean izinliSlotMu(int slot) {
+        return false;
+    }
+
+    /** Envanter kapatıldığında çağrılır (örn. sembol menüsünde son durumu kaydetmek için). */
+    public void kapandi(org.bukkit.event.inventory.InventoryCloseEvent olay) {
+        // varsayılan: hiçbir şey yapma
+    }
+
     /** Menüyü oluşturup oyuncuya açar. */
     public void ac() {
         this.envanter = eklenti.getServer().createInventory(tutucu, boyut(), Mesajlar.renkli(baslik()));

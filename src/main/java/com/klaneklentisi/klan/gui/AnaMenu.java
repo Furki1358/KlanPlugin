@@ -86,6 +86,7 @@ public class AnaMenu extends Menu {
 
         switch (slot) {
             case 10 -> {
+                if (!izinVarMi("BILGI")) return;
                 oyuncu.closeInventory();
                 eklenti.getKlanKomutu().bilgiGoster(oyuncu, klan);
             }
@@ -95,10 +96,12 @@ public class AnaMenu extends Menu {
             case 14 -> new MuttefikRakipMenu(eklenti, oyuncu, klan, false).ac();
             case 15 -> new KlanListesiMenu(eklenti, oyuncu, 0).ac();
             case 16 -> {
+                if (!izinVarMi("US")) return;
                 oyuncu.closeInventory();
                 eklenti.getKlanKomutu().usaIsinlan(oyuncu);
             }
             case 19 -> {
+                if (!izinVarMi("SOHBET")) return;
                 yonetici.sohbetModunuDegistir(oyuncu.getUniqueId());
                 yenile();
             }

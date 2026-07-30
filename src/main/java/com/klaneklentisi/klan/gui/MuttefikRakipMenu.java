@@ -62,6 +62,7 @@ public class MuttefikRakipMenu extends Menu {
             return;
         }
         if (slot < 45 && slot < liste.size()) {
+            if (!izinVarMi(muttefik ? "MUTTEFIK" : "RAKIP")) return;
             String hedefIsim = liste.get(slot);
             yonetici.klanBul(hedefIsim).ifPresent(hedef -> {
                 if (muttefik) {

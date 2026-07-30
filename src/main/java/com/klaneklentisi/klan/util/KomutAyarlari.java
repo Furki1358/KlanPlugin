@@ -26,6 +26,7 @@ public class KomutAyarlari {
     private final Map<String, List<String>> idToEtiketler = new LinkedHashMap<>();
     private final Map<String, String> idToKullanim = new LinkedHashMap<>();
     private final Map<String, String> idToAciklama = new LinkedHashMap<>();
+    private final Map<String, String> idToIzin = new LinkedHashMap<>();
     /** Sıralı ID listesi (yardım ekranında dosyadaki sıra korunur) */
     private final List<String> idSirasi = new ArrayList<>();
 
@@ -45,6 +46,7 @@ public class KomutAyarlari {
         idToEtiketler.clear();
         idToKullanim.clear();
         idToAciklama.clear();
+        idToIzin.clear();
         idSirasi.clear();
 
         if (!yaml.isConfigurationSection("komutlar")) return;
@@ -57,6 +59,7 @@ public class KomutAyarlari {
             idToEtiketler.put(id, etiketler);
             idToKullanim.put(id, yaml.getString("komutlar." + id + ".kullanim", ""));
             idToAciklama.put(id, yaml.getString("komutlar." + id + ".aciklama", ""));
+            idToIzin.put(id, yaml.getString("komutlar." + id + ".izin", "klan.kullan"));
 
             for (String etiket : etiketler) {
                 etiketToId.put(etiket.toLowerCase(TR), id);
@@ -82,6 +85,11 @@ public class KomutAyarlari {
 
     public String aciklama(String id) {
         return idToAciklama.getOrDefault(id, "");
+    }
+
+    /** Bir ID'nin Bukkit izin düğümünü döner (LuckPerms vb. ile kontrol edilir). */
+    public String izinDugumu(String id) {
+        return idToIzin.getOrDefault(id, "klan.kullan");
     }
 
     /** Tab-tamamlama için tüm komutların birincil etiketlerini döner. */

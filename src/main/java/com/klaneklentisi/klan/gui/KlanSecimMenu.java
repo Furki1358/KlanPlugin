@@ -86,6 +86,7 @@ public class KlanSecimMenu extends Menu {
         }
 
         if (slot < SAYFA_BASI && baslangic + slot < uygunKlanlar.size()) {
+            if (!izinVarMi(muttefik ? "MUTTEFIK" : "RAKIP")) return;
             Klan secilen = uygunKlanlar.get(baslangic + slot);
             KlanYoneticisi.Sonuc sonuc = muttefik
                     ? yonetici.muttefikEkle(kaynakKlan, secilen)

@@ -45,6 +45,8 @@ public class AyarlarMenu extends Menu {
 
         envanter.setItem(15, Esya.olustur(Material.WRITABLE_BOOK, mesajlar.baslik("menu.ayarlar.aciklama")));
 
+        envanter.setItem(17, Esya.olustur(Material.ITEM_FRAME, mesajlar.baslik("menu.sembol.baslik")));
+
         envanter.setItem(21, Esya.olustur(Material.TNT, mesajlar.baslik("menu.ayarlar.sil"),
                 List.of(mesajlar.baslik("menu.ayarlar.sil-aciklama"))));
 
@@ -85,6 +87,13 @@ public class AyarlarMenu extends Menu {
                 oyuncu.closeInventory();
                 oyuncu.sendMessage(mesajlar.al("menu.girdi.aciklama-iste"));
                 eklenti.getGirdiYoneticisi().girdiBekle(oyuncu.getUniqueId(), metin -> aciklamaIsle(metin));
+            }
+            case 17 -> {
+                if (!yetkiVarMi(Rutbe.YONETICI)) {
+                    oyuncu.sendMessage(mesajlar.al("menu.ayarlar.yetkisiz"));
+                    return;
+                }
+                new com.klaneklentisi.klan.gui.SembolAyarlaMenu(eklenti, oyuncu, klan).ac();
             }
             case 21 -> {
                 if (!yetkiVarMi(Rutbe.LIDER)) {

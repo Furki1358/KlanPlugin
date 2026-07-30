@@ -16,6 +16,11 @@ genel:
   tek-klan-siniri: true
   # Klan silindiğinde üssü de silinsin mi (sadece veri, dünyadaki bloklara dokunulmaz)
   silmede-us-temizle: true
+  # Klan açıklamasının azami uzunluğu (renk kodu enjeksiyonunu önlemek için & ve §
+  # karakterleri açıklamadan otomatik olarak temizlenir)
+  maks-aciklama-uzunlugu: 100
+  # Gönderilen bir klan davetinin kaç saniye sonra otomatik olarak süresi dolsun
+  davet-suresi-saniye: 300
 
 us-sistemi:
   # /klan us komutuyla ışınlanma açık mı
@@ -50,6 +55,15 @@ istatistik:
   vault-para-odulu: 0
   # Öldürünce konsolda çalıştırılacak komutlar - {oyuncu} = katil, {hedef} = ölen
   # Örnek: "give {oyuncu} diamond 1"
+  # DİKKAT: Buraya sadece güvenli komutlar ekleyin, bu liste oyuncu girdisi değil
+  # sunucu sahibinin kendi yapılandırmasıdır ve doğrudan konsolda çalıştırılır.
   odul-komutlari: []
+  # Güvenlik: Aynı klandan veya müttefik klandan biri diğerini öldürürse ödül
+  # verilmesin (aksi halde iki oyuncu birbirini güvenli şekilde tekrar tekrar
+  # öldürerek sınırsız ödül/para üretebilir). İstatistik yine de sayılır.
+  odul-sadece-dusman-klan: true
   # /klan liderlik komutunda ve GUI'de bir sayfada kaç oyuncu gösterilsin
   sayfa-basi: 8
+  # İstatistikler diske ne sıklıkla (saniye) kaydedilsin (performans için
+  # her öldürmede değil, periyodik ve asenkron olarak yazılır)
+  kayit-araligi-saniye: 60

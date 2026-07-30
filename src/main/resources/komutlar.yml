@@ -1,0 +1,115 @@
+# ===================================================
+#   KlanEklentisi - Komut İsimleri
+#   Her komutun "etiketler" listesindeki ilk kelime birincil
+#   isimdir (yardım ekranında ve tab-tamamlamada o gösterilir).
+#   Listeye istediğiniz kadar takma ad (alias) ekleyebilirsiniz.
+#   Örnek: "terfi" kelimesini beğenmediyseniz listeyi
+#   [yükselt, terfi] yaparak birincil ismi "yükselt" yapabilirsiniz.
+#   Değişiklik sonrası: /klanyonetim yenile
+# ===================================================
+
+komutlar:
+  YARDIM:
+    etiketler: [yardım, yardim, help]
+    kullanim: ""
+    aciklama: "Bu yardım menüsünü göster"
+  MENU:
+    etiketler: [menü, menu, gui]
+    kullanim: ""
+    aciklama: "Tıklanabilir klan menüsünü aç"
+  OLUSTUR:
+    etiketler: [oluştur, olustur, kur]
+    kullanim: "<isim> <etiket>"
+    aciklama: "Yeni klan kur"
+  SIL:
+    etiketler: [sil]
+    kullanim: "onayla"
+    aciklama: "Klanını sil"
+  BILGI:
+    etiketler: [bilgi]
+    kullanim: "[isim]"
+    aciklama: "Klan bilgilerini görüntüle"
+  LISTE:
+    etiketler: [liste]
+    kullanim: ""
+    aciklama: "Tüm klanları listele"
+  DAVET:
+    etiketler: [davet]
+    kullanim: "<oyuncu>"
+    aciklama: "Oyuncuyu klana davet et"
+  KABUL:
+    etiketler: [kabul]
+    kullanim: ""
+    aciklama: "Bekleyen daveti kabul et"
+  REDDET:
+    etiketler: [reddet]
+    kullanim: ""
+    aciklama: "Bekleyen daveti reddet"
+  KATIL:
+    etiketler: [katıl, katil]
+    kullanim: "<isim>"
+    aciklama: "Açık klana katıl"
+  AYRIL:
+    etiketler: [ayrıl, ayril]
+    kullanim: ""
+    aciklama: "Klandan ayrıl"
+  AT:
+    etiketler: [at]
+    kullanim: "<oyuncu>"
+    aciklama: "Üyeyi klandan at"
+  TERFI:
+    etiketler: [terfi, yükselt, yukselt]
+    kullanim: "<oyuncu>"
+    aciklama: "Üyeyi terfi ettir"
+  INDIR:
+    etiketler: [indir]
+    kullanim: "<oyuncu>"
+    aciklama: "Üyenin rütbesini düşür"
+  DEVRET:
+    etiketler: [devret]
+    kullanim: "<oyuncu>"
+    aciklama: "Liderliği devret"
+  KATILIMTURU:
+    etiketler: [katılımtürü, katilimturu]
+    kullanim: "<açık|davetli>"
+    aciklama: "Katılım türünü ayarla"
+  ETIKET:
+    etiketler: [etiket]
+    kullanim: "<etiket>"
+    aciklama: "Klan etiketini değiştir"
+  ACIKLAMA:
+    etiketler: [açıklama, aciklama]
+    kullanim: "<metin>"
+    aciklama: "Klan açıklamasını değiştir"
+  US:
+    etiketler: [üs, us]
+    kullanim: "[ayarla]"
+    aciklama: "Klan üssünü ayarla/kullan"
+  SEMBOL:
+    etiketler: [sembol]
+    kullanim: ""
+    aciklama: "Klan sembolünü ayarla (GUI açılır)"
+  MUTTEFIK:
+    etiketler: [müttefik, muttefik]
+    kullanim: "<ekle|çıkar> <isim>"
+    aciklama: "Müttefik yönet"
+  RAKIP:
+    etiketler: [rakip]
+    kullanim: "<ekle|çıkar> <isim>"
+    aciklama: "Rakip yönet"
+  SOHBET:
+    etiketler: [sohbet]
+    kullanim: "[mesaj]"
+    aciklama: "Klan sohbeti kullan"
+  MSOHBET:
+    etiketler: [ittifaksohbet, msohbet]
+    kullanim: "[mesaj]"
+    aciklama: "Müttefik sohbeti kullan"
+  LIDERLIK:
+    etiketler: [liderlik]
+    kullanim: ""
+    aciklama: "KDR liderlik tablosunu göster"
+  ISTATISTIK:
+    etiketler: [istatistik]
+    kullanim: "[oyuncu]"
+    aciklama: "Öldürme/ölme istatistiklerini göster"

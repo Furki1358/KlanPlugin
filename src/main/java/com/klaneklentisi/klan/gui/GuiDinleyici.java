@@ -30,6 +30,7 @@ public class GuiDinleyici implements Listener {
 
         boolean izinliSlot = ustEnvanterdeTiklandi
                 && !olay.isShiftClick()
+                && olay.getClick() != org.bukkit.event.inventory.ClickType.DOUBLE_CLICK
                 && tutucu.getMenu().izinliSlotMu(olay.getSlot());
 
         if (!izinliSlot) {

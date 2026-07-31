@@ -38,7 +38,7 @@ public class SembolAyarlaMenu extends Menu {
         for (int i = 0; i < boyut(); i++) {
             if (i == SEMBOL_SLOTU) continue;
             if (envanter.getItem(i) == null) {
-                envanter.setItem(i, Esya.olustur(Material.WHITE_STAINED_GLASS_PANE, " "));
+                envanter.setItem(i, Esya.olustur(Material.BLACK_STAINED_GLASS_PANE, " "));
             }
         }
         ItemStack mevcut = klan.getSembol();

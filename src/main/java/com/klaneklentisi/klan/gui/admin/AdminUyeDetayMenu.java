@@ -35,7 +35,7 @@ public class AdminUyeDetayMenu extends Menu {
 
     @Override
     protected int boyut() {
-        return 27;
+        return 54;
     }
 
     @Override
@@ -44,22 +44,27 @@ public class AdminUyeDetayMenu extends Menu {
         return mesajlar.baslik("admin.uye-detay.baslik", Map.of("oyuncu", isim));
     }
 
+    private void dolduruCam(int... slotlar) {
+        for (int s : slotlar) {
+            envanter.setItem(s, Esya.olustur(Material.WHITE_STAINED_GLASS_PANE, " "));
+        }
+    }
+
     @Override
     protected void doldur() {
-        for (int i = 0; i < boyut(); i++) {
-            envanter.setItem(i, Esya.doldurucu());
-        }
+        kenarCiz();
+        dolduruCam(10, 12, 14, 16, 19, 20, 24, 25, 28, 29, 30, 32, 33, 34);
 
         Rutbe hedefRutbe = klan.getRutbe(hedefUid);
         String isim = hedef().getName() == null ? hedefUid.toString().substring(0, 8) : hedef().getName();
         envanter.setItem(13, Esya.oyuncuKafasi(hedef(), "&f" + isim,
-                List.of("&7▪ Rütbe: &f★ " + (hedefRutbe == null ? "-" : hedefRutbe.getGorunenAd()))));
+                List.of("&7▪ Rütbe: &f" + (hedefRutbe == null ? "-" : hedefRutbe.getGorunenAd()))));
 
         envanter.setItem(11, Esya.olustur(Material.NETHER_STAR, mesajlar.baslik("admin.uye-detay.lider-yap"),
                 List.of(mesajlar.baslik("admin.uye-detay.lider-yap-aciklama"))));
         envanter.setItem(15, Esya.olustur(Material.BARRIER, mesajlar.baslik("admin.uye-detay.at"),
                 List.of(mesajlar.baslik("admin.uye-detay.at-aciklama"))));
-        envanter.setItem(22, Esya.olustur(Material.ARROW, mesajlar.baslik("admin.uye-detay.geri")));
+        envanter.setItem(31, Esya.olustur(Material.ARROW, mesajlar.baslik("admin.uye-detay.geri")));
     }
 
     @Override
@@ -77,7 +82,7 @@ public class AdminUyeDetayMenu extends Menu {
                     new AdminKlanListesiMenu(eklenti, oyuncu, 0).ac();
                 }
             }
-            case 22 -> new AdminUyeYonetimMenu(eklenti, oyuncu, klan, gelinenSayfa).ac();
+            case 31 -> new AdminUyeYonetimMenu(eklenti, oyuncu, klan, gelinenSayfa).ac();
             default -> {}
         }
     }

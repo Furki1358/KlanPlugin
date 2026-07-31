@@ -21,7 +21,7 @@ public class AnaMenu extends Menu {
 
     @Override
     protected int boyut() {
-        return 27;
+        return 54;
     }
 
     @Override
@@ -31,82 +31,123 @@ public class AnaMenu extends Menu {
                 : mesajlar.baslik("menu.ana.baslik");
     }
 
+    private void dolduruCam(int... slotlar) {
+        for (int s : slotlar) {
+            envanter.setItem(s, Esya.olustur(Material.WHITE_STAINED_GLASS_PANE, " "));
+        }
+    }
+
     @Override
     protected void doldur() {
-        for (int i = 0; i < boyut(); i++) {
-            envanter.setItem(i, Esya.doldurucu());
-        }
+        kenarCiz();
 
         Optional<Klan> davetOpt = yonetici.davetiGetir(oyuncu.getUniqueId());
         if (davetOpt.isPresent()) {
-            envanter.setItem(4, Esya.olustur(Material.WRITTEN_BOOK,
+            envanter.setItem(23, Esya.olustur(Material.WRITTEN_BOOK,
                     mesajlar.baslik("menu.ana.davet-var"),
                     mesajlar.alListe("menu.ana.davet-aciklama", Map.of("klan", davetOpt.get().getIsim()))));
+        } else {
+            dolduruCam(23);
         }
 
         if (klan == null) {
-            envanter.setItem(13, Esya.olustur(Material.NETHER_STAR,
+            dolduruCam(10, 11, 12, 14, 15, 16, 19, 20, 24, 25, 28, 29, 30, 32, 33, 34);
+            envanter.setItem(13, Esya.olustur(Material.OAK_SAPLING,
                     mesajlar.baslik("menu.ana.olustur"), mesajlar.alListe("menu.ana.olustur-aciklama")));
-            envanter.setItem(20, Esya.olustur(Material.GOLDEN_SWORD, mesajlar.baslik("menu.ana.liderlik")));
-            envanter.setItem(22, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.ana.kapat")));
+            envanter.setItem(21, Esya.olustur(Material.GOLDEN_SWORD, mesajlar.baslik("menu.ana.liderlik")));
+            envanter.setItem(31, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.ana.kapat")));
             return;
         }
 
+        // --- 1. iç satır: ana klan eylemleri (simetrik, 7 ikon) ---
         envanter.setItem(10, Esya.olustur(Material.BOOK, mesajlar.baslik("menu.ana.bilgi")));
         envanter.setItem(11, Esya.olustur(Material.PLAYER_HEAD, mesajlar.baslik("menu.ana.uyeler")));
         envanter.setItem(12, Esya.olustur(Material.ANVIL, mesajlar.baslik("menu.ana.ayarlar")));
-        envanter.setItem(13, Esya.olustur(Material.LIME_DYE, mesajlar.baslik("menu.ana.muttefikler")));
-        envanter.setItem(14, Esya.olustur(Material.RED_DYE, mesajlar.baslik("menu.ana.rakipler")));
-        envanter.setItem(15, Esya.olustur(Material.MAP, mesajlar.baslik("menu.ana.klan-listesi")));
-        envanter.setItem(16, Esya.olustur(Material.COMPASS, mesajlar.baslik("menu.ana.us")));
+        envanter.setItem(13, klanSembolEsyasi());
+        envanter.setItem(14, Esya.olustur(Material.LIME_BANNER, mesajlar.baslik("menu.ana.muttefikler")));
+        envanter.setItem(15, Esya.olustur(Material.RED_BANNER, mesajlar.baslik("menu.ana.rakipler")));
+        envanter.setItem(16, Esya.olustur(Material.MAP, mesajlar.baslik("menu.ana.klan-listesi")));
 
+        // --- 2. iç satır: üs / sohbet / liderlik / kendi istatistiğin (simetrik, orta odaklı) ---
+        envanter.setItem(19, Esya.olustur(Material.COMPASS, mesajlar.baslik("menu.ana.us")));
         boolean sohbetAcik = yonetici.sohbetModuAcikMi(oyuncu.getUniqueId());
-        envanter.setItem(19, Esya.olustur(Material.WRITABLE_BOOK,
+        envanter.setItem(20, Esya.olustur(Material.WRITABLE_BOOK,
                 mesajlar.baslik(sohbetAcik ? "menu.ana.sohbet-ac" : "menu.ana.sohbet-kapali")));
-        envanter.setItem(20, Esya.olustur(Material.GOLDEN_SWORD, mesajlar.baslik("menu.ana.liderlik")));
+        envanter.setItem(21, Esya.olustur(Material.GOLDEN_SWORD, mesajlar.baslik("menu.ana.liderlik")));
+        envanter.setItem(22, kendiIstatistigimEsyasi());
+        dolduruCam(24, 25);
 
-        envanter.setItem(22, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.ana.kapat")));
+        // --- 3. iç satır: kapat (ortada) ---
+        dolduruCam(28, 29, 30, 32, 33, 34);
+        envanter.setItem(31, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.ana.kapat")));
+    }
+
+    /** Klanın kendi seçtiği sembolü varsa onu, yoksa nötr bir sandık ikonunu döner. */
+    private org.bukkit.inventory.ItemStack klanSembolEsyasi() {
+        List<String> lore = List.of(
+                com.klaneklentisi.klan.util.Mesajlar.renkli("&7[&f" + klan.getEtiket() + "&7]"),
+                com.klaneklentisi.klan.util.Mesajlar.renkli("&7Üye: &f" + klan.getUyeSayisi()));
+        if (klan.getSembol() != null) {
+            var esya = klan.getSembol().clone();
+            esya.setAmount(1);
+            var meta = esya.getItemMeta();
+            if (meta != null) {
+                meta.setDisplayName(com.klaneklentisi.klan.util.Mesajlar.renkli("&6★ " + klan.getIsim()));
+                meta.setLore(lore);
+                esya.setItemMeta(meta);
+            }
+            return esya;
+        }
+        return Esya.olustur(Material.CHEST, "&6★ " + klan.getIsim(), lore);
+    }
+
+    private org.bukkit.inventory.ItemStack kendiIstatistigimEsyasi() {
+        var ist = eklenti.getIstatistikYoneticisi().getIstatistik(oyuncu.getUniqueId());
+        return Esya.oyuncuKafasi(oyuncu, "&e★ İstatistiklerim", List.of(
+                com.klaneklentisi.klan.util.Mesajlar.renkli("&a▪ Öldürme: &f" + ist.getOldurme()),
+                com.klaneklentisi.klan.util.Mesajlar.renkli("&c▪ Ölme: &f" + ist.getOlme()),
+                com.klaneklentisi.klan.util.Mesajlar.renkli("&7▪ K/D: &f" + ist.getOran())));
     }
 
     @Override
     public void tikla(InventoryClickEvent olay) {
         int slot = olay.getSlot();
 
-        if (slot == 4 && yonetici.davetiGetir(oyuncu.getUniqueId()).isPresent()) {
+        if (slot == 23 && yonetici.davetiGetir(oyuncu.getUniqueId()).isPresent()) {
             Klan davetKlani = yonetici.davetiGetir(oyuncu.getUniqueId()).get();
             new DavetMenu(eklenti, oyuncu, davetKlani).ac();
             return;
         }
 
         if (klan == null) {
-            if (slot == 20) new LiderlikMenu(eklenti, oyuncu, 0).ac();
-            if (slot == 22) oyuncu.closeInventory();
+            if (slot == 21) new LiderlikMenu(eklenti, oyuncu, 0).ac();
+            if (slot == 31) oyuncu.closeInventory();
             return;
         }
 
         switch (slot) {
-            case 10 -> {
+            case 10, 13 -> {
                 if (!izinVarMi("BILGI")) return;
                 oyuncu.closeInventory();
                 eklenti.getKlanKomutu().bilgiGoster(oyuncu, klan);
             }
             case 11 -> new UyelerMenu(eklenti, oyuncu, klan, 0).ac();
             case 12 -> new AyarlarMenu(eklenti, oyuncu, klan).ac();
-            case 13 -> new MuttefikRakipMenu(eklenti, oyuncu, klan, true).ac();
-            case 14 -> new MuttefikRakipMenu(eklenti, oyuncu, klan, false).ac();
-            case 15 -> new KlanListesiMenu(eklenti, oyuncu, 0).ac();
-            case 16 -> {
+            case 14 -> new MuttefikRakipMenu(eklenti, oyuncu, klan, true).ac();
+            case 15 -> new MuttefikRakipMenu(eklenti, oyuncu, klan, false).ac();
+            case 16 -> new KlanListesiMenu(eklenti, oyuncu, 0).ac();
+            case 19 -> {
                 if (!izinVarMi("US")) return;
                 oyuncu.closeInventory();
                 eklenti.getKlanKomutu().usaIsinlan(oyuncu);
             }
-            case 19 -> {
+            case 20 -> {
                 if (!izinVarMi("SOHBET")) return;
                 yonetici.sohbetModunuDegistir(oyuncu.getUniqueId());
                 yenile();
             }
-            case 20 -> new LiderlikMenu(eklenti, oyuncu, 0).ac();
-            case 22 -> oyuncu.closeInventory();
+            case 21 -> new LiderlikMenu(eklenti, oyuncu, 0).ac();
+            case 31 -> oyuncu.closeInventory();
             default -> {}
         }
     }

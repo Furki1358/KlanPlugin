@@ -81,4 +81,21 @@ public abstract class Menu {
         }
         return true;
     }
+
+    /**
+     * Envanterin tüm kenarlarını (üst/alt satır + sağ/sol sütun) cam panel ile
+     * çerçeveler, iç kısmı boş bırakır. Geniş/ferah, simetrik bir görünüm için
+     * her menü doldur()'da önce bunu çağırıp sonra ikonlarını iç kısma yerleştirir.
+     */
+    protected void kenarCiz() {
+        int boyut = boyut();
+        int satirSayisi = boyut / 9;
+        for (int s = 0; s < boyut; s++) {
+            int satir = s / 9;
+            int sutun = s % 9;
+            if (satir == 0 || satir == satirSayisi - 1 || sutun == 0 || sutun == 8) {
+                envanter.setItem(s, Esya.doldurucu());
+            }
+        }
+    }
 }

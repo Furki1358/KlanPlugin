@@ -34,9 +34,12 @@ public class SembolAyarlaMenu extends Menu {
 
     @Override
     protected void doldur() {
+        kenarCiz();
         for (int i = 0; i < boyut(); i++) {
             if (i == SEMBOL_SLOTU) continue;
-            envanter.setItem(i, Esya.doldurucu());
+            if (envanter.getItem(i) == null) {
+                envanter.setItem(i, Esya.olustur(Material.WHITE_STAINED_GLASS_PANE, " "));
+            }
         }
         ItemStack mevcut = klan.getSembol();
         envanter.setItem(SEMBOL_SLOTU, mevcut != null ? mevcut.clone() : null);

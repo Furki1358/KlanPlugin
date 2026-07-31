@@ -23,7 +23,7 @@ public class AdminKlanDetayMenu extends Menu {
 
     @Override
     protected int boyut() {
-        return 27;
+        return 54;
     }
 
     @Override
@@ -31,11 +31,16 @@ public class AdminKlanDetayMenu extends Menu {
         return mesajlar.baslik("admin.klan-detay.baslik", Map.of("isim", klan.getIsim()));
     }
 
+    private void dolduruCam(int... slotlar) {
+        for (int s : slotlar) {
+            envanter.setItem(s, Esya.olustur(Material.WHITE_STAINED_GLASS_PANE, " "));
+        }
+    }
+
     @Override
     protected void doldur() {
-        for (int i = 0; i < boyut(); i++) {
-            envanter.setItem(i, Esya.doldurucu());
-        }
+        kenarCiz();
+        dolduruCam(19, 20, 21, 23, 24, 25, 28, 29, 30, 32, 33, 34);
 
         envanter.setItem(10, Esya.olustur(Material.BOOK, mesajlar.baslik("admin.klan-detay.bilgi")));
         envanter.setItem(12, Esya.olustur(Material.COMPARATOR,
@@ -44,9 +49,9 @@ public class AdminKlanDetayMenu extends Menu {
         envanter.setItem(14, Esya.olustur(Material.PLAYER_HEAD, mesajlar.baslik("admin.klan-detay.uye-yonetimi")));
         envanter.setItem(16, Esya.olustur(Material.COMPASS, mesajlar.baslik("admin.klan-detay.us-sil"),
                 List.of(mesajlar.baslik("admin.klan-detay.us-sil-aciklama"))));
-        envanter.setItem(21, Esya.olustur(Material.TNT, mesajlar.baslik("admin.klan-detay.zorla-sil"),
+        envanter.setItem(22, Esya.olustur(Material.TNT, mesajlar.baslik("admin.klan-detay.zorla-sil"),
                 List.of(mesajlar.baslik("admin.klan-detay.zorla-sil-aciklama"))));
-        envanter.setItem(26, Esya.olustur(Material.ARROW, mesajlar.baslik("admin.klan-detay.geri")));
+        envanter.setItem(31, Esya.olustur(Material.ARROW, mesajlar.baslik("admin.klan-detay.geri")));
     }
 
     @Override
@@ -67,7 +72,7 @@ public class AdminKlanDetayMenu extends Menu {
                 oyuncu.sendMessage(mesajlar.al("yonetim.yenilendi"));
                 yenile();
             }
-            case 21 -> {
+            case 22 -> {
                 oyuncu.closeInventory();
                 String klanIsmi = klan.getIsim();
                 oyuncu.sendMessage(mesajlar.al("menu.girdi.sil-onay-iste"));
@@ -81,7 +86,7 @@ public class AdminKlanDetayMenu extends Menu {
                         });
                 oyuncu.sendMessage(onayButon);
             }
-            case 26 -> new AdminKlanListesiMenu(eklenti, oyuncu, 0).ac();
+            case 31 -> new AdminKlanListesiMenu(eklenti, oyuncu, 0).ac();
             default -> {}
         }
     }

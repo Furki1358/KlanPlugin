@@ -45,7 +45,7 @@ public class MuttefikRakipMenu extends Menu {
                     List.of(mesajlar.baslik("menu.muttefik-rakip.cikar-aciklama"))));
         }
 
-        envanter.setItem(49, Esya.olustur(Material.EMERALD, mesajlar.baslik("menu.muttefik-rakip.ekle")));
+        envanter.setItem(49, Esya.olustur(Material.GOLD_INGOT, mesajlar.baslik("menu.muttefik-rakip.ekle")));
         envanter.setItem(45, Esya.olustur(Material.ARROW, mesajlar.baslik("menu.muttefik-rakip.geri")));
     }
 

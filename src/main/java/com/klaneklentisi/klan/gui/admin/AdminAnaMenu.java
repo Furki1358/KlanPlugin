@@ -25,7 +25,7 @@ public class AdminAnaMenu extends Menu {
 
     private void dolduruCam(int... slotlar) {
         for (int s : slotlar) {
-            envanter.setItem(s, Esya.olustur(Material.WHITE_STAINED_GLASS_PANE, " "));
+            envanter.setItem(s, Esya.olustur(Material.BLACK_STAINED_GLASS_PANE, " "));
         }
     }
 
@@ -35,7 +35,7 @@ public class AdminAnaMenu extends Menu {
         dolduruCam(10, 16, 19, 20, 21, 23, 24, 25, 28, 29, 30, 32, 33, 34);
         envanter.setItem(12, Esya.olustur(Material.MAP, mesajlar.baslik("admin.ana.tum-klanlar")));
         envanter.setItem(14, Esya.olustur(Material.COMPARATOR, mesajlar.baslik("admin.ana.ayarlar")));
-        envanter.setItem(22, Esya.olustur(Material.EMERALD, mesajlar.baslik("admin.ana.yenile")));
+        envanter.setItem(22, Esya.olustur(Material.GOLD_INGOT, mesajlar.baslik("admin.ana.yenile")));
         envanter.setItem(31, Esya.olustur(Material.BARRIER, mesajlar.baslik("admin.ana.kapat")));
     }
 

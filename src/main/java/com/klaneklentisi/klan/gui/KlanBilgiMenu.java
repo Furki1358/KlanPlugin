@@ -34,7 +34,7 @@ public class KlanBilgiMenu extends Menu {
 
     private void dolduruCam(int... slotlar) {
         for (int s : slotlar) {
-            envanter.setItem(s, Esya.olustur(Material.WHITE_STAINED_GLASS_PANE, " "));
+            envanter.setItem(s, Esya.olustur(Material.BLACK_STAINED_GLASS_PANE, " "));
         }
     }
 

@@ -20,7 +20,7 @@ public class DavetMenu extends Menu {
 
     @Override
     protected int boyut() {
-        return 27;
+        return 54;
     }
 
     @Override
@@ -28,20 +28,27 @@ public class DavetMenu extends Menu {
         return mesajlar.baslik("menu.davet.baslik", Map.of("klan", davetEdenKlan.getIsim()));
     }
 
+    private void dolduruCam(int... slotlar) {
+        for (int s : slotlar) {
+            envanter.setItem(s, Esya.olustur(Material.WHITE_STAINED_GLASS_PANE, " "));
+        }
+    }
+
     @Override
     protected void doldur() {
-        for (int i = 0; i < boyut(); i++) {
-            envanter.setItem(i, Esya.doldurucu());
-        }
-        envanter.setItem(11, Esya.olustur(Material.LIME_WOOL, mesajlar.baslik("menu.davet.kabul")));
-        envanter.setItem(15, Esya.olustur(Material.RED_WOOL, mesajlar.baslik("menu.davet.reddet")));
-        envanter.setItem(22, Esya.olustur(Material.ARROW, mesajlar.baslik("menu.davet.geri")));
+        kenarCiz();
+        dolduruCam(10, 11, 15, 16, 19, 20, 24, 25, 28, 29, 32, 33, 34);
+        envanter.setItem(13, Esya.olustur(Material.WRITTEN_BOOK, "&e" + davetEdenKlan.getIsim(),
+                java.util.List.of("&7[" + davetEdenKlan.getEtiket() + "]")));
+        envanter.setItem(21, Esya.olustur(Material.LIME_WOOL, mesajlar.baslik("menu.davet.kabul")));
+        envanter.setItem(23, Esya.olustur(Material.RED_WOOL, mesajlar.baslik("menu.davet.reddet")));
+        envanter.setItem(31, Esya.olustur(Material.ARROW, mesajlar.baslik("menu.davet.geri")));
     }
 
     @Override
     public void tikla(InventoryClickEvent olay) {
         switch (olay.getSlot()) {
-            case 11 -> {
+            case 21 -> {
                 if (!izinVarMi("KABUL")) return;
                 KlanYoneticisi.Sonuc sonuc = yonetici.davetKabulEt(oyuncu);
                 if (sonuc == KlanYoneticisi.Sonuc.BASARILI) {
@@ -59,13 +66,13 @@ public class DavetMenu extends Menu {
                     oyuncu.closeInventory();
                 }
             }
-            case 15 -> {
+            case 23 -> {
                 if (!izinVarMi("REDDET")) return;
                 yonetici.davetReddet(oyuncu);
                 oyuncu.sendMessage(mesajlar.al("reddet.basarili"));
                 oyuncu.closeInventory();
             }
-            case 22 -> new AnaMenu(eklenti, oyuncu).ac();
+            case 31 -> new AnaMenu(eklenti, oyuncu).ac();
             default -> {}
         }
     }

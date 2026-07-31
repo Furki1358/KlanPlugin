@@ -48,6 +48,6 @@ public final class Esya {
     }
 
     public static ItemStack doldurucu() {
-        return olustur(Material.GRAY_STAINED_GLASS_PANE, " ");
+        return olustur(Material.BLACK_STAINED_GLASS_PANE, " ");
     }
 }

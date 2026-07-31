@@ -15,7 +15,7 @@ public class AdminAnaMenu extends Menu {
 
     @Override
     protected int boyut() {
-        return 27;
+        return 54;
     }
 
     @Override
@@ -23,30 +23,35 @@ public class AdminAnaMenu extends Menu {
         return mesajlar.baslik("admin.ana.baslik");
     }
 
+    private void dolduruCam(int... slotlar) {
+        for (int s : slotlar) {
+            envanter.setItem(s, Esya.olustur(Material.WHITE_STAINED_GLASS_PANE, " "));
+        }
+    }
+
     @Override
     protected void doldur() {
-        for (int i = 0; i < boyut(); i++) {
-            envanter.setItem(i, Esya.doldurucu());
-        }
-        envanter.setItem(11, Esya.olustur(Material.MAP, mesajlar.baslik("admin.ana.tum-klanlar")));
-        envanter.setItem(13, Esya.olustur(Material.COMPARATOR, mesajlar.baslik("admin.ana.ayarlar")));
-        envanter.setItem(15, Esya.olustur(Material.EMERALD, mesajlar.baslik("admin.ana.yenile")));
-        envanter.setItem(22, Esya.olustur(Material.BARRIER, mesajlar.baslik("admin.ana.kapat")));
+        kenarCiz();
+        dolduruCam(10, 16, 19, 20, 21, 23, 24, 25, 28, 29, 30, 32, 33, 34);
+        envanter.setItem(12, Esya.olustur(Material.MAP, mesajlar.baslik("admin.ana.tum-klanlar")));
+        envanter.setItem(14, Esya.olustur(Material.COMPARATOR, mesajlar.baslik("admin.ana.ayarlar")));
+        envanter.setItem(22, Esya.olustur(Material.EMERALD, mesajlar.baslik("admin.ana.yenile")));
+        envanter.setItem(31, Esya.olustur(Material.BARRIER, mesajlar.baslik("admin.ana.kapat")));
     }
 
     @Override
     public void tikla(InventoryClickEvent olay) {
         switch (olay.getSlot()) {
-            case 11 -> new AdminKlanListesiMenu(eklenti, oyuncu, 0).ac();
-            case 13 -> new AdminAyarlarMenu(eklenti, oyuncu).ac();
-            case 15 -> {
+            case 12 -> new AdminKlanListesiMenu(eklenti, oyuncu, 0).ac();
+            case 14 -> new AdminAyarlarMenu(eklenti, oyuncu).ac();
+            case 22 -> {
                 eklenti.reloadConfig();
                 mesajlar.yukle();
                 eklenti.getKomutAyarlari().yukle();
                 oyuncu.sendMessage(mesajlar.al("yonetim.yenilendi"));
                 yenile();
             }
-            case 22 -> oyuncu.closeInventory();
+            case 31 -> oyuncu.closeInventory();
             default -> {}
         }
     }

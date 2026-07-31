@@ -7,7 +7,7 @@
 #   fontunda düzgün görünür, silmeden bırakabilirsiniz.
 # ===================================================
 
-on-ek: "&8«&6⚑ Klan&8» &r"
+on-ek: "&8«&6❖ Klan&8» &r"
 
 genel:
   oyuncu-degil: "&c✖ Bu komutu sadece oyuncular kullanabilir."
@@ -56,7 +56,7 @@ sil:
 
 bilgi:
   klan-yok: "&c✖ Böyle bir klan yok."
-  baslik: "&6&l❖ &6{isim} &8[&f{etiket}&8] &6❖"
+  baslik: "&8«&6❖ &e{isim} &8[&6{etiket}&8]&6 ❖&8»"
   aciklama: "&7▪ Açıklama: &f{aciklama}"
   lider: "&7▪ Lider: &f★ {lider}"
   uye-sayisi: "&7▪ Üye sayısı: &f{sayi}"
@@ -67,7 +67,7 @@ bilgi:
   liste-bos: "yok"
 
 liste:
-  baslik: "&6&l❖ Klanlar &7({sayi}) &6❖"
+  baslik: "&8«&6❖ Klanlar &7({sayi})&6 ❖&8»"
   satir: "&8➤ &f{isim} &8[&7{etiket}&8] &7({uyeSayisi} üye)"
   bos: "&7Henüz hiç klan yok."
 
@@ -190,14 +190,14 @@ yonetim:
 
 istatistik:
   olum-bildirimi: "&a✚1 &7Öldürme &8» &f{hedef} &8(&fK/D: {oran}&8)"
-  baslik: "&6★ {oyuncu} &7İstatistikleri"
+  baslik: "&8«&6★ {oyuncu} &7İstatistikleri&8»"
   oldurme: "&7▪ Öldürme: &a{sayi}"
   olme: "&7▪ Ölme: &c{sayi}"
   oran: "&7▪ K/D Oranı: &f{oran}"
   oyuncu-bulunamadi: "&c✖ Bu oyuncu hiç oynamamış."
 
 liderlik:
-  baslik: "&6&l❖ Liderlik Tablosu &7(Sayfa {sayfa}/{toplam}) &6❖"
+  baslik: "&8«&6❖ Liderlik Tablosu &7(Sayfa {sayfa}/{toplam})&6 ❖&8»"
   satir: "&7#{sira} &f{oyuncu} &8» &aÖ:{oldurme} &7Ö:{olme} &8» &fK/D: {oran}"
   bos: "&7Henüz hiç istatistik yok."
   onceki-buton: "◄ Önceki"
@@ -219,40 +219,40 @@ yonetim-yardim-metni:
 # ===================================================
 menu:
   ana:
-    baslik: "&8❖ &6Klan Menüsü &8❖"
-    klanin-yok-baslik: "&8❖ Klan Menüsü - Klansız ❖"
+    baslik: "&8«&6❖ FXKlan &8»"
+    klanin-yok-baslik: "&8«&6❖ FXKlan &8- &7Klansız&8»"
     bilgi: "&6★ Klan Bilgisi"
-    uyeler: "&a⚔ Üyeler"
-    ayarlar: "&e⚙ Ayarlar"
-    muttefikler: "&b⚔ Müttefikler"
-    rakipler: "&c⚔ Rakipler"
-    klan-listesi: "&d❖ Klan Listesi"
-    us: "&2⚑ Klan Üssü"
+    uyeler: "&6⚔ Üyeler"
+    ayarlar: "&6⚙ Ayarlar"
+    muttefikler: "&6⚔ Müttefikler"
+    rakipler: "&6⚔ Rakipler"
+    klan-listesi: "&6❖ Klan Listesi"
+    us: "&6⚑ Klan Üssü"
     liderlik: "&6★ Liderlik Tablosu"
-    sohbet-ac: "&f✎ Klan Sohbeti: &aAçık &7(kapatmak için tıkla)"
-    sohbet-kapali: "&f✎ Klan Sohbeti: &cKapalı &7(açmak için tıkla)"
-    olustur: "&a✚ Klan Oluştur"
+    sohbet-ac: "&6✎ Klan Sohbeti: &aAçık &7(kapatmak için tıkla)"
+    sohbet-kapali: "&6✎ Klan Sohbeti: &cKapalı &7(açmak için tıkla)"
+    olustur: "&6✚ Klan Oluştur"
     olustur-aciklama:
       - "&7Yeni bir klan kurmak için"
       - "&7sohbete şunu yaz:"
       - "&f/klan olustur <isim> <etiket>"
-    davet-var: "&e⚑ Bekleyen Davetin Var!"
+    davet-var: "&6⚑ Bekleyen Davetin Var!"
     davet-aciklama:
       - "&7{klan} klanından davet aldın."
       - "&7Görüntülemek için tıkla."
     kapat: "&c✖ Kapat"
     klanin-yok: "&c✖ Bir klana ait değilsin!"
   uyeler:
-    baslik: "&8⚔ Üyeler - {isim}"
+    baslik: "&8«&6⚔ Üyeler &8- &e{isim}&8»"
     geri: "&7◄ Ana Menüye Dön"
-    sonraki-sayfa: "&aSonraki Sayfa ►"
-    onceki-sayfa: "&a◄ Önceki Sayfa"
+    sonraki-sayfa: "&6Sonraki Sayfa ►"
+    onceki-sayfa: "&6◄ Önceki Sayfa"
     uye-bilgi:
       - "&7▪ Rütbe: &f★ {rutbe}"
       - ""
       - "&7İncelemek için tıkla"
   uye-detay:
-    baslik: "&8☺ {oyuncu}"
+    baslik: "&8«&6☺ {oyuncu}&8»"
     terfi: "&a▲ Terfi Ettir"
     terfi-aciklama: "&7Bu üyeyi bir üst rütbeye çıkar"
     indir: "&e▼ Rütbeyi Düşür"
@@ -264,12 +264,12 @@ menu:
     geri: "&7◄ Üyelere Dön"
     yetkisiz: "&c✖ Bu üye için işlem yapma yetkin yok."
   ayarlar:
-    baslik: "&8⚙ Klan Ayarları"
-    katilim-turu: "&e⚙ Katılım Türü: &f{tur}"
+    baslik: "&8«&6⚙ Klan Ayarları&8»"
+    katilim-turu: "&6⚙ Katılım Türü: &e{tur}"
     katilim-turu-aciklama: "&7Değiştirmek için tıkla"
-    etiket: "&b✎ Etiket Değiştir"
+    etiket: "&6✎ Etiket Değiştir"
     etiket-aciklama: "&7Mevcut: &f[{etiket}]"
-    aciklama: "&3✎ Açıklama Değiştir"
+    aciklama: "&6✎ Açıklama Değiştir"
     sil: "&4☠ Klanı Sil"
     sil-aciklama: "&7Dikkat: Geri alınamaz!"
     geri: "&7◄ Ana Menüye Dön"
@@ -280,42 +280,42 @@ menu:
     sil-onay-iste: "&c⚠ Klanı silmek istediğinden emin misin? Onaylamak için aşağıdaki butona tıkla:"
     iptal-edildi: "&7➤ İşlem iptal edildi."
   muttefik-rakip:
-    baslik-muttefik: "&8⚔ Müttefikler"
-    baslik-rakip: "&8⚔ Rakipler"
-    ekle: "&a✚ Ekle"
+    baslik-muttefik: "&8«&6⚔ Müttefikler&8»"
+    baslik-rakip: "&8«&6⚔ Rakipler&8»"
+    ekle: "&6✚ Ekle"
     ekle-aciklama: "&7Yeni bir klan seçmek için tıkla"
     cikar-aciklama: "&7Çıkarmak için tıkla"
     gecersiz-sayi: "&7Henüz hiç yok."
     geri: "&7◄ Ana Menüye Dön"
   klan-sec:
-    baslik: "&8❖ Klan Seç"
-    sonraki-sayfa: "&aSonraki Sayfa ►"
-    onceki-sayfa: "&a◄ Önceki Sayfa"
+    baslik: "&8«&6❖ Klan Seç&8»"
+    sonraki-sayfa: "&6Sonraki Sayfa ►"
+    onceki-sayfa: "&6◄ Önceki Sayfa"
     geri: "&7◄ Geri"
     bos: "&7Uygun klan bulunamadı."
   klan-listesi:
-    baslik: "&8❖ Tüm Klanlar"
+    baslik: "&8«&6❖ Tüm Klanlar&8»"
     satir-aciklama:
       - "&7▪ Etiket: &f[{etiket}]"
       - "&7▪ Üye: &f{uyeSayisi}"
       - "&7▪ Katılım: &f{tur}"
       - ""
       - "&7Bilgi için tıkla"
-    sonraki-sayfa: "&aSonraki Sayfa ►"
-    onceki-sayfa: "&a◄ Önceki Sayfa"
+    sonraki-sayfa: "&6Sonraki Sayfa ►"
+    onceki-sayfa: "&6◄ Önceki Sayfa"
     geri: "&7◄ Ana Menüye Dön"
   klan-bilgi:
-    baslik: "&8★ {isim}"
+    baslik: "&8«&6★ {isim}&8»"
     katil: "&a✔ Klana Katıl"
     katil-kapali: "&7✖ Bu klan davetle katılıma kapalı"
     geri: "&7◄ Geri"
   davet:
-    baslik: "&8⚑ Davet: {klan}"
+    baslik: "&8«&6⚑ Davet&8: &e{klan}&8»"
     kabul: "&a✔ Kabul Et"
     reddet: "&c✖ Reddet"
     geri: "&7◄ Ana Menüye Dön"
   sembol:
-    baslik: "&8❖ Klan Sembolünü Seç ❖"
+    baslik: "&8«&6❖ Klan Sembolü&8»"
     ayarlandi: "&a✔ Klan sembolü güncellendi!"
 
 # ===================================================
@@ -323,56 +323,56 @@ menu:
 # ===================================================
 admin:
   ana:
-    baslik: "&4❖ &cAdmin Klan Paneli &4❖"
-    tum-klanlar: "&d❖ Tüm Klanlar"
-    ayarlar: "&e⚙ Genel Ayarlar"
+    baslik: "&8«&6❖ Admin Paneli&8»"
+    tum-klanlar: "&6❖ Tüm Klanlar"
+    ayarlar: "&6⚙ Genel Ayarlar"
     yenile: "&a✔ Ayarları Yenile"
     kapat: "&c✖ Kapat"
   klan-listesi:
-    baslik: "&8❖ Tüm Klanlar (Admin)"
+    baslik: "&8«&6❖ Klanlar &8(&eAdmin&8)&8»"
     satir-aciklama:
       - "&7▪ Etiket: &f[{etiket}]"
       - "&7▪ Üye: &f{uyeSayisi}"
       - "&7▪ Katılım: &f{tur}"
       - ""
       - "&7Yönetmek için tıkla"
-    sonraki-sayfa: "&aSonraki Sayfa ►"
-    onceki-sayfa: "&a◄ Önceki Sayfa"
+    sonraki-sayfa: "&6Sonraki Sayfa ►"
+    onceki-sayfa: "&6◄ Önceki Sayfa"
     geri: "&7◄ Ana Menüye Dön"
     bos: "&7Henüz hiç klan yok."
   klan-detay:
-    baslik: "&8⚙ {isim} (Admin)"
+    baslik: "&8«&6⚙ {isim} &8(&eAdmin&8)&8»"
     bilgi: "&6★ Bilgi Görüntüle"
-    katilim-turu: "&e⚙ Katılım Türü: &f{tur}"
+    katilim-turu: "&6⚙ Katılım Türü: &e{tur}"
     katilim-turu-aciklama: "&7Değiştirmek için tıkla"
-    uye-yonetimi: "&a⚔ Üye Yönetimi"
+    uye-yonetimi: "&6⚔ Üye Yönetimi"
     us-sil: "&6⚑ Üssü Sıfırla"
     us-sil-aciklama: "&7Klanın üs konumunu temizler"
     zorla-sil: "&4☠ Klanı Zorla Sil"
     zorla-sil-aciklama: "&7Dikkat: Geri alınamaz!"
     geri: "&7◄ Klan Listesine Dön"
   uye-yonetimi:
-    baslik: "&8⚔ Üye Yönetimi - {isim}"
+    baslik: "&8«&6⚔ Üye Yönetimi &8- &e{isim}&8»"
     geri: "&7◄ Klana Dön"
-    sonraki-sayfa: "&aSonraki Sayfa ►"
-    onceki-sayfa: "&a◄ Önceki Sayfa"
+    sonraki-sayfa: "&6Sonraki Sayfa ►"
+    onceki-sayfa: "&6◄ Önceki Sayfa"
   uye-detay:
-    baslik: "&8☺ {oyuncu} (Admin)"
+    baslik: "&8«&6☺ {oyuncu} &8(&eAdmin&8)&8»"
     lider-yap: "&6★ Zorla Lider Yap"
     lider-yap-aciklama: "&7Bu üyeyi klanın yeni lideri yapar"
     at: "&4✖ Zorla Klandan At"
     at-aciklama: "&7Rütbeye bakılmaksızın atar"
     geri: "&7◄ Üyelere Dön"
   ayarlar:
-    baslik: "&8⚙ Genel Ayarlar (Admin)"
-    tek-klan-siniri: "&e⚙ Tek Klan Sınırı: &f{deger}"
+    baslik: "&8«&6⚙ Genel Ayarlar&8»"
+    tek-klan-siniri: "&6⚙ Tek Klan Sınırı: &e{deger}"
     tek-klan-siniri-aciklama: "&7Bir oyuncu sadece 1 klanda olabilir mi?"
-    us-aktif: "&e⚑ Üs Sistemi: &f{deger}"
+    us-aktif: "&6⚑ Üs Sistemi: &e{deger}"
     us-aktif-aciklama: "&7Üs (home) sistemini aç/kapat"
-    us-bekleme: "&e⌚ Üs Bekleme Süresi: &f{deger} sn"
+    us-bekleme: "&6⌚ Üs Bekleme Süresi: &e{deger} sn"
     us-bekleme-aciklama: "&7Değiştirmek için tıkla"
-    min-isim: "&e✎ Min İsim Uzunluğu: &f{deger}"
-    maks-isim: "&e✎ Maks İsim Uzunluğu: &f{deger}"
+    min-isim: "&6✎ Min İsim Uzunluğu: &e{deger}"
+    maks-isim: "&6✎ Maks İsim Uzunluğu: &e{deger}"
     uzunluk-aciklama: "&7Değiştirmek için tıkla"
     geri: "&7◄ Ana Menüye Dön"
   girdi:

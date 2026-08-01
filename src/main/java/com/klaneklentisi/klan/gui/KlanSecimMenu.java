@@ -87,10 +87,26 @@ public class KlanSecimMenu extends Menu {
 
         if (slot < SAYFA_BASI && baslangic + slot < uygunKlanlar.size()) {
             if (!izinVarMi(muttefik ? "MUTTEFIK" : "RAKIP")) return;
-            Klan secilen = uygunKlanlar.get(baslangic + slot);
+
+            // Menü açıkken kaynak veya hedef klan silinmiş/değişmiş olabilir (örn. başka
+            // bir admin işlemi araya girdiyse) - eski nesne referansına güvenmek yerine
+            // güncel halini tekrar çekip doğruluyoruz.
+            Klan tazeKaynak = yonetici.klanBul(kaynakKlan.getIsim()).orElse(null);
+            if (tazeKaynak == null) {
+                oyuncu.closeInventory();
+                return;
+            }
+            Klan secilenOnceki = uygunKlanlar.get(baslangic + slot);
+            Klan secilen = yonetici.klanBul(secilenOnceki.getIsim()).orElse(null);
+            if (secilen == null) {
+                oyuncu.sendMessage(mesajlar.al((muttefik ? "muttefik" : "rakip") + ".klan-yok"));
+                yenile();
+                return;
+            }
+
             KlanYoneticisi.Sonuc sonuc = muttefik
-                    ? yonetici.muttefikEkle(kaynakKlan, secilen)
-                    : yonetici.rakipEkle(kaynakKlan, secilen);
+                    ? yonetici.muttefikEkle(tazeKaynak, secilen)
+                    : yonetici.rakipEkle(tazeKaynak, secilen);
 
             String anahtar = (muttefik ? "muttefik" : "rakip") + switch (sonuc) {
                 case BASARILI -> ".eklendi";
@@ -100,7 +116,7 @@ public class KlanSecimMenu extends Menu {
                 default -> ".klan-yok";
             };
             oyuncu.sendMessage(mesajlar.al(anahtar, Map.of("klan", secilen.getIsim())));
-            new MuttefikRakipMenu(eklenti, oyuncu, kaynakKlan, muttefik).ac();
+            new MuttefikRakipMenu(eklenti, oyuncu, tazeKaynak, muttefik).ac();
         }
     }
 }

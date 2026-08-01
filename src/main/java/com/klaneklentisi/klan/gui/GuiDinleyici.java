@@ -3,6 +3,7 @@ package com.klaneklentisi.klan.gui;
 import com.klaneklentisi.klan.KlanEklentisi;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -12,6 +13,13 @@ import org.bukkit.event.inventory.InventoryDragEvent;
  * Güvenlik notu: getInventory() yerine daima getView().getTopInventory() üzerinden
  * kontrol yapılır - aksi halde oyuncunun kendi envanterinden shift-tık/numara tuşu
  * ile GUI'ye eşya sokması engellenemez.
+ *
+ * ÖNEMLİ DÜZELTME: Oyuncunun KENDİ envanterinde (alt envanter) yaptığı normal
+ * (shift olmayan) bir tıklama üst envanteri hiçbir zaman etkilemez - sadece kendi
+ * eşyasını elinize alır/yerleştirir. Bunu da iptal etmek, "eşyayı elime al, sonra
+ * üst envanterdeki slota bırak" gerektiren akışları (örn. klan sembolü seçme)
+ * tamamen kırar. Sadece shift-tık (otomatik üst envantere aktarma) risklidir ve
+ * o iptal edilir.
  */
 public class GuiDinleyici implements Listener {
 
@@ -28,24 +36,29 @@ public class GuiDinleyici implements Listener {
         boolean ustEnvanterdeTiklandi = olay.getClickedInventory() != null
                 && olay.getClickedInventory().equals(olay.getView().getTopInventory());
 
-        boolean izinliSlot = ustEnvanterdeTiklandi
-                && !olay.isShiftClick()
-                && olay.getClick() != org.bukkit.event.inventory.ClickType.DOUBLE_CLICK
+        if (!ustEnvanterdeTiklandi) {
+            // Kendi envanterinde tıklama: sadece shift-tık üst envanteri etkileyebilir.
+            if (olay.isShiftClick()) {
+                olay.setCancelled(true);
+            }
+            return;
+        }
+
+        boolean izinliSlot = !olay.isShiftClick()
+                && olay.getClick() != ClickType.DOUBLE_CLICK
                 && tutucu.getMenu().izinliSlotMu(olay.getSlot());
 
         if (!izinliSlot) {
             olay.setCancelled(true);
         }
 
-        if (ustEnvanterdeTiklandi) {
-            try {
-                tutucu.getMenu().tikla(olay);
-            } catch (Exception hata) {
-                eklenti.getLoglayici().hataKaydet("GUI tıklama (" + tutucu.getMenu().getClass().getSimpleName() + ")", hata);
-                var oyuncu = olay.getWhoClicked();
-                if (oyuncu instanceof org.bukkit.entity.Player p) {
-                    p.closeInventory();
-                }
+        try {
+            tutucu.getMenu().tikla(olay);
+        } catch (Exception hata) {
+            eklenti.getLoglayici().hataKaydet("GUI tıklama (" + tutucu.getMenu().getClass().getSimpleName() + ")", hata);
+            var oyuncu = olay.getWhoClicked();
+            if (oyuncu instanceof org.bukkit.entity.Player p) {
+                p.closeInventory();
             }
         }
     }

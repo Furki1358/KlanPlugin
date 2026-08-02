@@ -83,23 +83,26 @@ public abstract class Menu {
     }
 
     /**
-     * Envanterin tüm kenarlarını (üst/alt satır + sağ/sol sütun) siyah-altın desenli
-     * cam panelle çerçeveler ("Kraliyet Altını" teması), iç kısmı boş bırakır.
-     * Geniş/ferah, simetrik bir görünüm için her menü doldur()'da önce bunu çağırıp
-     * sonra ikonlarını iç kısma yerleştirir.
+     * Envanterin tüm kenarlarını (üst/alt satır + sağ/sol sütun) tek renkli,
+     * gölgeli siyah cam panelle çerçeveler (siyah + koyu gri tonlaması ile ince
+     * bir derinlik/gölge hissi verir), iç kısmı boş bırakır. Geniş/ferah, simetrik
+     * bir görünüm için her menü doldur()'da önce bunu çağırıp sonra ikonlarını
+     * iç kısma yerleştirir.
      */
     protected void kenarCiz() {
         int boyut = boyut();
         int satirSayisi = boyut / 9;
-        var altin = Esya.olustur(org.bukkit.Material.YELLOW_STAINED_GLASS_PANE, " ");
         var siyah = Esya.olustur(org.bukkit.Material.BLACK_STAINED_GLASS_PANE, " ");
+        var koyuGri = Esya.olustur(org.bukkit.Material.GRAY_STAINED_GLASS_PANE, " ");
         for (int s = 0; s < boyut; s++) {
             int satir = s / 9;
             int sutun = s % 9;
             boolean kenar = satir == 0 || satir == satirSayisi - 1 || sutun == 0 || sutun == 8;
             if (kenar) {
-                boolean altinSirasi = (satir + sutun) % 2 == 0;
-                envanter.setItem(s, altinSirasi ? altin.clone() : siyah.clone());
+                // Köşelere ve tam kenar orta noktalarına hafif gri gölge, geri kalan
+                // çerçeve siyah - tek renkli ama düz değil, ince bir gölge hissi verir.
+                boolean golgeli = (satir == 0 || satir == satirSayisi - 1) && (sutun == 0 || sutun == 8 || sutun == 4);
+                envanter.setItem(s, golgeli ? koyuGri.clone() : siyah.clone());
             }
         }
     }

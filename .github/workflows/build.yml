@@ -36,20 +36,35 @@ jobs:
           name: FXKlan-jar
           path: target/*.jar
 
+      - name: CHANGELOG.md'den bu sürümün notlarını çıkar
+        id: degisiklikler
+        run: |
+          VER="${{ steps.surum.outputs.versiyon }}"
+          awk -v ver="$VER" '
+            BEGIN{bulundu=0}
+            $0 ~ "^## \\[" ver "\\]" {bulundu=1; print; next}
+            bulundu && /^## \[/{bulundu=0}
+            bulundu{print}
+          ' CHANGELOG.md > /tmp/surum_notlari.md
+          if [ ! -s /tmp/surum_notlari.md ]; then
+            echo "(Bu sürüm için CHANGELOG.md içinde bir bölüm bulunamadı.)" > /tmp/surum_notlari.md
+          fi
+          {
+            cat /tmp/surum_notlari.md
+            echo ""
+            echo "---"
+            echo ""
+            echo "**Kurulum:** Sadece jar dosyasını sunucunun \`plugins/\` klasörüne atmanız yeterlidir. Ek/zorunlu bir bağımlılık gerekmez."
+            echo ""
+            echo "Opsiyonel entegrasyonlar (varsa otomatik algılanır): Vault (öldürme ödülü için), PlaceholderAPI 2.11.x+, LuckPerms."
+            echo ""
+            echo "Tüm sürümlerin listesi için: [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md)"
+          } > /tmp/release_body.md
+
       - name: GitHub Release oluştur/güncelle
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.surum.outputs.versiyon }}
           name: FXKlan v${{ steps.surum.outputs.versiyon }}
           files: target/*.jar
-          body: |
-            **FXKlan v${{ steps.surum.outputs.versiyon }}**
-
-            Kurulum: Sadece jar dosyasını sunucunun `plugins/` klasörüne atmanız yeterlidir.
-            Ek/zorunlu bir bağımlılık gerekmez.
-
-            Opsiyonel entegrasyonlar (varsa otomatik algılanır):
-            - Vault (ekonomi/öldürme ödülü için) - herhangi bir güncel sürüm
-            - PlaceholderAPI - 2.11.x veya üzeri
-            - LuckPerms - herhangi bir güncel sürüm
-          generate_release_notes: true
+          body_path: /tmp/release_body.md

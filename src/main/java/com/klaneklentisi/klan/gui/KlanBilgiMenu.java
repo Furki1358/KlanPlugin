@@ -41,7 +41,7 @@ public class KlanBilgiMenu extends Menu {
     @Override
     protected void doldur() {
         kenarCiz();
-        dolduruCam(10, 11, 15, 16, 19, 20, 24, 25, 28, 29, 30, 32, 33, 34);
+        dolduruCam(10, 11, 15, 16, 19, 21, 22, 23, 24, 25, 28, 29, 30, 32, 33, 34);
 
         String liderAdi = Bukkit.getOfflinePlayer(klan.getKurucu()).getName();
         List<String> bilgi = new ArrayList<>();
@@ -55,11 +55,11 @@ public class KlanBilgiMenu extends Menu {
         envanter.setItem(13, klanEsyasi("&6★ " + klan.getIsim(), renkliListe(bilgi)));
 
         if (klan.getKatilimTuru() == KatilimTuru.ACIK) {
-            envanter.setItem(21, Esya.olustur(Material.LIME_WOOL, mesajlar.baslik("menu.klan-bilgi.katil")));
+            envanter.setItem(20, Esya.olustur(Material.LIME_WOOL, mesajlar.baslik("menu.klan-bilgi.katil")));
         } else {
-            envanter.setItem(21, Esya.olustur(Material.RED_WOOL, mesajlar.baslik("menu.klan-bilgi.katil-kapali")));
+            envanter.setItem(20, Esya.olustur(Material.RED_WOOL, mesajlar.baslik("menu.klan-bilgi.katil-kapali")));
         }
-        envanter.setItem(23, Esya.olustur(Material.ARROW, mesajlar.baslik("menu.klan-bilgi.geri")));
+        envanter.setItem(31, Esya.olustur(Material.ARROW, mesajlar.baslik("menu.klan-bilgi.geri")));
     }
 
     private org.bukkit.inventory.ItemStack klanEsyasi(String isim, List<String> lore) {
@@ -88,11 +88,11 @@ public class KlanBilgiMenu extends Menu {
     @Override
     public void tikla(InventoryClickEvent olay) {
         int slot = olay.getSlot();
-        if (slot == 23) {
+        if (slot == 31) {
             new KlanListesiMenu(eklenti, oyuncu, 0).ac();
             return;
         }
-        if (slot == 21 && klan.getKatilimTuru() == KatilimTuru.ACIK) {
+        if (slot == 20 && klan.getKatilimTuru() == KatilimTuru.ACIK) {
             if (!izinVarMi("KATIL")) return;
             KlanYoneticisi.Sonuc sonuc = yonetici.klanaKatil(klan, oyuncu);
             switch (sonuc) {

@@ -66,21 +66,26 @@ public class UyeDetayMenu extends Menu {
                 "&7▪ K/D: &f" + ist.getOran()
         )));
 
-        dolduruCam(10, 12, 14, 16, 19, 20, 24, 25, 28, 29, 30, 32, 33, 34);
+        dolduruCam(10, 11, 12, 14, 15, 16, 20, 21, 22, 23, 24, 29, 30, 32, 33);
 
         if (liderMi && !kendisiMi && hedefRutbe != Rutbe.LIDER) {
-            envanter.setItem(11, Esya.olustur(Material.LIME_DYE, mesajlar.baslik("menu.uye-detay.terfi"),
+            envanter.setItem(19, Esya.olustur(Material.LIME_DYE, mesajlar.baslik("menu.uye-detay.terfi"),
                     List.of(mesajlar.baslik("menu.uye-detay.terfi-aciklama"))));
-            envanter.setItem(15, Esya.olustur(Material.GRAY_DYE, mesajlar.baslik("menu.uye-detay.indir"),
+            envanter.setItem(25, Esya.olustur(Material.GRAY_DYE, mesajlar.baslik("menu.uye-detay.indir"),
                     List.of(mesajlar.baslik("menu.uye-detay.indir-aciklama"))));
-            envanter.setItem(19, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.uye-detay.at"),
+            envanter.setItem(28, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.uye-detay.at"),
                     List.of(mesajlar.baslik("menu.uye-detay.at-aciklama"))));
-            envanter.setItem(20, Esya.olustur(Material.NETHER_STAR, mesajlar.baslik("menu.uye-detay.devret"),
+            envanter.setItem(34, Esya.olustur(Material.NETHER_STAR, mesajlar.baslik("menu.uye-detay.devret"),
                     List.of(mesajlar.baslik("menu.uye-detay.devret-aciklama"))));
-        } else if (!kendisiMi && yetkiliRutbe != null && hedefRutbe != null
-                && yetkiliRutbe.getSeviye() > hedefRutbe.getSeviye()) {
-            envanter.setItem(19, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.uye-detay.at"),
-                    List.of(mesajlar.baslik("menu.uye-detay.at-aciklama"))));
+        } else {
+            dolduruCam(19, 25, 34);
+            if (!kendisiMi && yetkiliRutbe != null && hedefRutbe != null
+                    && yetkiliRutbe.getSeviye() > hedefRutbe.getSeviye()) {
+                envanter.setItem(28, Esya.olustur(Material.BARRIER, mesajlar.baslik("menu.uye-detay.at"),
+                        List.of(mesajlar.baslik("menu.uye-detay.at-aciklama"))));
+            } else {
+                dolduruCam(28);
+            }
         }
 
         envanter.setItem(31, Esya.olustur(Material.ARROW, mesajlar.baslik("menu.uye-detay.geri")));
@@ -92,19 +97,19 @@ public class UyeDetayMenu extends Menu {
         KlanYoneticisi.Sonuc sonuc;
 
         switch (slot) {
-            case 11 -> {
+            case 19 -> {
                 if (!izinVarMi("TERFI")) return;
                 sonuc = yonetici.rutbeYukselt(klan, oyuncu, hedef());
                 mesajGoster(sonuc, "yukselt");
                 yenile();
             }
-            case 15 -> {
+            case 25 -> {
                 if (!izinVarMi("INDIR")) return;
                 sonuc = yonetici.rutbeIndir(klan, oyuncu, hedef());
                 mesajGoster(sonuc, "indir");
                 yenile();
             }
-            case 19 -> {
+            case 28 -> {
                 if (!izinVarMi("AT")) return;
                 sonuc = yonetici.uyeAt(klan, oyuncu, hedef());
                 if (sonuc == KlanYoneticisi.Sonuc.BASARILI) {
@@ -113,7 +118,7 @@ public class UyeDetayMenu extends Menu {
                     oyuncu.sendMessage(mesajlar.al("menu.uye-detay.yetkisiz"));
                 }
             }
-            case 20 -> {
+            case 34 -> {
                 if (!izinVarMi("DEVRET")) return;
                 sonuc = yonetici.liderlikDevret(klan, oyuncu, hedef());
                 if (sonuc == KlanYoneticisi.Sonuc.BASARILI) {

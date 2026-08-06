@@ -1,5 +1,10 @@
 # Değişiklik Günlüğü
 
+## [1.0.7] - Dağınık ikon düzeni ve marka fontu
+### Değişti
+- Ana Menü ikonları referans görseldeki gibi sıkışık tek blok yerine, aralarında boşluk bırakan küçük gruplar halinde yeniden yerleştirildi.
+- "FXKlan" marka adı, Minecraft'ın varsayılan fontunun desteklediği geniş (fullwidth) Unicode karakterlerle gösterilecek şekilde güncellendi (resource pack gerekmez).
+
 ## [1.0.6] - Tek renk gölgeli cam çerçeve ve otomatik Release notları
 ### Değişti
 - GUI çerçevesi siyah-altın damadan, tek renkli (siyah + koyu gri tonlama) ince gölgeli cama çevrildi. Altın vurgular metin/ikonlarda korundu.

@@ -37,18 +37,18 @@ public class DavetMenu extends Menu {
     @Override
     protected void doldur() {
         kenarCiz();
-        dolduruCam(10, 11, 15, 16, 19, 20, 24, 25, 28, 29, 32, 33, 34);
+        dolduruCam(10, 11, 15, 16, 20, 21, 22, 23, 24, 28, 29, 30, 32, 33, 34);
         envanter.setItem(13, Esya.olustur(Material.WRITTEN_BOOK, "&e" + davetEdenKlan.getIsim(),
                 java.util.List.of("&7[" + davetEdenKlan.getEtiket() + "]")));
-        envanter.setItem(21, Esya.olustur(Material.LIME_WOOL, mesajlar.baslik("menu.davet.kabul")));
-        envanter.setItem(23, Esya.olustur(Material.RED_WOOL, mesajlar.baslik("menu.davet.reddet")));
+        envanter.setItem(19, Esya.olustur(Material.LIME_WOOL, mesajlar.baslik("menu.davet.kabul")));
+        envanter.setItem(25, Esya.olustur(Material.RED_WOOL, mesajlar.baslik("menu.davet.reddet")));
         envanter.setItem(31, Esya.olustur(Material.ARROW, mesajlar.baslik("menu.davet.geri")));
     }
 
     @Override
     public void tikla(InventoryClickEvent olay) {
         switch (olay.getSlot()) {
-            case 21 -> {
+            case 19 -> {
                 if (!izinVarMi("KABUL")) return;
                 KlanYoneticisi.Sonuc sonuc = yonetici.davetKabulEt(oyuncu);
                 if (sonuc == KlanYoneticisi.Sonuc.BASARILI) {
@@ -66,7 +66,7 @@ public class DavetMenu extends Menu {
                     oyuncu.closeInventory();
                 }
             }
-            case 23 -> {
+            case 25 -> {
                 if (!izinVarMi("REDDET")) return;
                 yonetici.davetReddet(oyuncu);
                 oyuncu.sendMessage(mesajlar.al("reddet.basarili"));

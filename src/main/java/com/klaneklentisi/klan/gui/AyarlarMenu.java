@@ -39,23 +39,23 @@ public class AyarlarMenu extends Menu {
     @Override
     protected void doldur() {
         kenarCiz();
-        dolduruCam(12, 14, 19, 20, 21, 23, 24, 25, 28, 29, 30, 32, 33, 34);
+        dolduruCam(11, 12, 14, 15, 20, 21, 23, 24, 28, 29, 30, 32, 33, 34);
 
         envanter.setItem(10, Esya.olustur(Material.COMPARATOR,
                 mesajlar.baslik("menu.ayarlar.katilim-turu", Map.of("tur", klan.getKatilimTuru().name())),
                 List.of(mesajlar.baslik("menu.ayarlar.katilim-turu-aciklama"))));
 
-        envanter.setItem(11, Esya.olustur(Material.NAME_TAG, mesajlar.baslik("menu.ayarlar.etiket"),
-                List.of(mesajlar.baslik("menu.ayarlar.etiket-aciklama", Map.of("etiket", klan.getEtiket())))));
-
         envanter.setItem(13, Esya.olustur(Material.ITEM_FRAME, mesajlar.baslik("menu.sembol.baslik")));
 
-        envanter.setItem(15, Esya.olustur(Material.WRITABLE_BOOK, mesajlar.baslik("menu.ayarlar.aciklama")));
+        envanter.setItem(16, Esya.olustur(Material.NAME_TAG, mesajlar.baslik("menu.ayarlar.etiket"),
+                List.of(mesajlar.baslik("menu.ayarlar.etiket-aciklama", Map.of("etiket", klan.getEtiket())))));
 
-        envanter.setItem(16, Esya.olustur(Material.TNT, mesajlar.baslik("menu.ayarlar.sil"),
-                List.of(mesajlar.baslik("menu.ayarlar.sil-aciklama"))));
+        envanter.setItem(19, Esya.olustur(Material.WRITABLE_BOOK, mesajlar.baslik("menu.ayarlar.aciklama")));
 
         envanter.setItem(22, klanOnizlemeEsyasi());
+
+        envanter.setItem(25, Esya.olustur(Material.TNT, mesajlar.baslik("menu.ayarlar.sil"),
+                List.of(mesajlar.baslik("menu.ayarlar.sil-aciklama"))));
 
         envanter.setItem(31, Esya.olustur(Material.ARROW, mesajlar.baslik("menu.ayarlar.geri")));
     }
@@ -96,7 +96,15 @@ public class AyarlarMenu extends Menu {
                 yonetici.kaydet(klan);
                 yenile();
             }
-            case 11 -> {
+            case 13 -> {
+                if (!izinVarMi("SEMBOL")) return;
+                if (!yetkiVarMi(Rutbe.YONETICI)) {
+                    oyuncu.sendMessage(mesajlar.al("menu.ayarlar.yetkisiz"));
+                    return;
+                }
+                new com.klaneklentisi.klan.gui.SembolAyarlaMenu(eklenti, oyuncu, klan).ac();
+            }
+            case 16 -> {
                 if (!izinVarMi("ETIKET")) return;
                 if (!yetkiVarMi(Rutbe.LIDER)) {
                     oyuncu.sendMessage(mesajlar.al("menu.ayarlar.yetkisiz"));
@@ -106,15 +114,7 @@ public class AyarlarMenu extends Menu {
                 oyuncu.sendMessage(mesajlar.al("menu.girdi.etiket-iste"));
                 eklenti.getGirdiYoneticisi().girdiBekle(oyuncu.getUniqueId(), metin -> etiketIsle(metin));
             }
-            case 13 -> {
-                if (!izinVarMi("SEMBOL")) return;
-                if (!yetkiVarMi(Rutbe.YONETICI)) {
-                    oyuncu.sendMessage(mesajlar.al("menu.ayarlar.yetkisiz"));
-                    return;
-                }
-                new com.klaneklentisi.klan.gui.SembolAyarlaMenu(eklenti, oyuncu, klan).ac();
-            }
-            case 15 -> {
+            case 19 -> {
                 if (!izinVarMi("ACIKLAMA")) return;
                 if (!yetkiVarMi(Rutbe.YONETICI)) {
                     oyuncu.sendMessage(mesajlar.al("menu.ayarlar.yetkisiz"));
@@ -124,7 +124,7 @@ public class AyarlarMenu extends Menu {
                 oyuncu.sendMessage(mesajlar.al("menu.girdi.aciklama-iste"));
                 eklenti.getGirdiYoneticisi().girdiBekle(oyuncu.getUniqueId(), metin -> aciklamaIsle(metin));
             }
-            case 16 -> {
+            case 25 -> {
                 if (!izinVarMi("SIL")) return;
                 if (!yetkiVarMi(Rutbe.LIDER)) {
                     oyuncu.sendMessage(mesajlar.al("menu.ayarlar.yetkisiz"));

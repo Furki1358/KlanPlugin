@@ -205,7 +205,7 @@ liderlik:
   sayfa-yok: "&7Bu sayfada gösterilecek bir şey yok."
 
 yardim:
-  baslik: "&6&l❖═══ FXKlan Komutları ═══❖"
+  baslik: "&6&l❖═══ ＦＸＫｌａｎ Komutları ═══❖"
 
 yonetim-yardim-metni:
   - "&6&l❖═══ Klan Yönetim Komutları ═══❖"
@@ -219,8 +219,8 @@ yonetim-yardim-metni:
 # ===================================================
 menu:
   ana:
-    baslik: "&8«&6❖ FXKlan &8»"
-    klanin-yok-baslik: "&8«&6❖ FXKlan &8- &7Klansız&8»"
+    baslik: "&8«&6❖ ＦＸＫｌａｎ &8»"
+    klanin-yok-baslik: "&8«&6❖ ＦＸＫｌａｎ &8- &7Klansız&8»"
     bilgi: "&6★ Klan Bilgisi"
     uyeler: "&6⚔ Üyeler"
     ayarlar: "&6⚙ Ayarlar"
